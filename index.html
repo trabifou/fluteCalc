@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flute Crafting Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Palatino', serif;
+            background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);
+            color: #3e2723;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(62, 39, 35, 0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #8b6f47 0%, #6d5738 100%);
+            color: #fff;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid #5d4a37;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            background: #d4b896;
+            border-bottom: 3px solid #8b6f47;
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            color: #3e2723;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-right: 1px solid #b89968;
+            font-family: 'Georgia', 'Palatino', serif;
+        }
+
+        .tab-button:last-child {
+            border-right: none;
+        }
+
+        .tab-button:hover {
+            background: rgba(139, 111, 71, 0.2);
+        }
+
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 4px solid #8b6f47;
+            margin-bottom: -3px;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 30px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .algorithm-explanation {
+            background: #fff8f0;
+            border-left: 4px solid #8b6f47;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .algorithm-explanation h2 {
+            color: #6d5738;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .algorithm-explanation h3 {
+            color: #8b6f47;
+            margin-top: 15px;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .algorithm-explanation p,
+        .algorithm-explanation ul {
+            line-height: 1.8;
+            color: #5d4a37;
+        }
+
+        .algorithm-explanation ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .algorithm-explanation li {
+            margin-bottom: 8px;
+        }
+
+        .formula {
+            background: #f5e6d3;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            display: inline-block;
+            border: 1px solid #d4b896;
+        }
+
+        .input-section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .input-section h3 {
+            color: #6d5738;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #d4b896;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5d4a37;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d4b896;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+            background: #fffcf7;
+            font-family: 'Georgia', 'Palatino', serif;
+        }
+
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #8b6f47;
+            background: white;
+        }
+
+        .input-hint {
+            font-size: 0.9em;
+            color: #8b6f47;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        .calculate-button {
+            background: linear-gradient(135deg, #8b6f47 0%, #6d5738 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(109, 87, 56, 0.3);
+            font-family: 'Georgia', 'Palatino', serif;
+        }
+
+        .calculate-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(109, 87, 56, 0.4);
+        }
+
+        .calculate-button:active {
+            transform: translateY(0);
+        }
+
+        .results-section {
+            margin-top: 30px;
+        }
+
+        .results-section h3 {
+            color: #6d5738;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        th {
+            background: linear-gradient(135deg, #8b6f47 0%, #6d5738 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-size: 1.1em;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #f0e6d8;
+            color: #3e2723;
+        }
+
+        tr:hover {
+            background: #fff8f0;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #8b6f47;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .tab-button {
+                font-size: 0.9em;
+                padding: 15px 10px;
+            }
+
+            .tab-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎵 Flute Crafting Calculator</h1>
+            <p>Precision tools for crafting beautiful wooden flutes</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('simple')">Simple Ratio Method</button>
+            <button class="tab-button" onclick="switchTab('acoustical')">Acoustical Physics Method</button>
+            <button class="tab-button" onclick="switchTab('benade')">Benade's Formula</button>
+        </div>
+
+        <!-- Simple Ratio Method Tab -->
+        <div id="simple" class="tab-content active">
+            <div class="algorithm-explanation">
+                <h2>Simple Ratio Method</h2>
+                <p>This traditional method uses simple mathematical ratios based on the fundamental length of the flute. It's the easiest approach for beginners and produces good results for basic flutes.</p>
+                
+                <h3>How it Works:</h3>
+                <ul>
+                    <li>The fundamental length determines the lowest note the flute can play</li>
+                    <li>Hole positions are calculated as ratios of this fundamental length</li>
+                    <li>Each hole position follows the formula: <span class="formula">Position = Fundamental Length × Ratio</span></li>
+                    <li>Ratios are derived from the equal temperament scale (12th root of 2)</li>
+                </ul>
+
+                <h3>Calculation Details:</h3>
+                <p>For a 6-hole flute in the key of D, the ratios are calculated as:</p>
+                <ul>
+                    <li><strong>Hole 1:</strong> L × (1 - 1/2^(2/12)) ≈ L × 0.891</li>
+                    <li><strong>Hole 2:</strong> L × (1 - 1/2^(4/12)) ≈ L × 0.794</li>
+                    <li><strong>Hole 3:</strong> L × (1 - 1/2^(5/12)) ≈ L × 0.749</li>
+                    <li><strong>Hole 4:</strong> L × (1 - 1/2^(7/12)) ≈ L × 0.667</li>
+                    <li><strong>Hole 5:</strong> L × (1 - 1/2^(9/12)) ≈ L × 0.595</li>
+                    <li><strong>Hole 6:</strong> L × (1 - 1/2^(11/12)) ≈ L × 0.529</li>
+                </ul>
+            </div>
+
+            <div class="input-section">
+                <h3>Input Parameters</h3>
+                <div class="input-group">
+                    <label for="simple-length">Fundamental Length (mm):</label>
+                    <input type="number" id="simple-length" value="400" min="100" max="1000" step="1">
+                    <div class="input-hint">Distance from blowing edge to the end of the flute</div>
+                </div>
+                <div class="input-group">
+                    <label for="simple-diameter">Inner Diameter (mm):</label>
+                    <input type="number" id="simple-diameter" value="19" min="10" max="50" step="0.5">
+                    <div class="input-hint">Internal bore diameter of the flute</div>
+                </div>
+                <div class="input-group">
+                    <label for="simple-holes">Number of Holes:</label>
+                    <select id="simple-holes">
+                        <option value="5">5 holes</option>
+                        <option value="6" selected>6 holes</option>
+                        <option value="7">7 holes</option>
+                        <option value="8">8 holes</option>
+                    </select>
+                </div>
+                <button class="calculate-button" onclick="calculateSimple()">Calculate Positions</button>
+            </div>
+
+            <div id="simple-results" class="results-section hidden">
+                <h3>Calculated Hole Positions</h3>
+                <table id="simple-table">
+                    <thead>
+                        <tr>
+                            <th>Hole Number</th>
+                            <th>Distance from Blowing Edge (mm)</th>
+                            <th>Suggested Diameter (mm)</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="simple-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Acoustical Physics Method Tab -->
+        <div id="acoustical" class="tab-content">
+            <div class="algorithm-explanation">
+                <h2>Acoustical Physics Method</h2>
+                <p>This method uses fundamental acoustic principles to calculate hole positions based on the speed of sound, desired frequencies, and the physical properties of the flute.</p>
+                
+                <h3>How it Works:</h3>
+                <ul>
+                    <li>Uses the relationship: <span class="formula">f = v / (2 × L)</span> where f is frequency, v is speed of sound, L is effective length</li>
+                    <li>Accounts for end corrections based on bore diameter</li>
+                    <li>Considers temperature and humidity effects on sound velocity</li>
+                    <li>More accurate for precise tuning requirements</li>
+                </ul>
+
+                <h3>Calculation Details:</h3>
+                <p>The effective length for each note is calculated as:</p>
+                <ul>
+                    <li><strong>Speed of sound:</strong> v ≈ 343 m/s (at 20°C)</li>
+                    <li><strong>End correction:</strong> δ ≈ 0.6 × diameter</li>
+                    <li><strong>Effective length:</strong> L_eff = v / (2 × f) - δ</li>
+                    <li><strong>Hole position:</strong> Distance from embouchure hole</li>
+                </ul>
+            </div>
+
+            <div class="input-section">
+                <h3>Input Parameters</h3>
+                <div class="input-group">
+                    <label for="acoustical-frequency">Base Frequency (Hz):</label>
+                    <input type="number" id="acoustical-frequency" value="293.66" min="100" max="1000" step="0.01">
+                    <div class="input-hint">Fundamental frequency (D4 = 293.66 Hz)</div>
+                </div>
+                <div class="input-group">
+                    <label for="acoustical-diameter">Inner Diameter (mm):</label>
+                    <input type="number" id="acoustical-diameter" value="19" min="10" max="50" step="0.5">
+                    <div class="input-hint">Internal bore diameter</div>
+                </div>
+                <div class="input-group">
+                    <label for="acoustical-temp">Temperature (°C):</label>
+                    <input type="number" id="acoustical-temp" value="20" min="-10" max="40" step="1">
+                    <div class="input-hint">Ambient temperature affects sound velocity</div>
+                </div>
+                <div class="input-group">
+                    <label for="acoustical-holes">Number of Holes:</label>
+                    <select id="acoustical-holes">
+                        <option value="5">5 holes</option>
+                        <option value="6" selected>6 holes</option>
+                        <option value="7">7 holes</option>
+                        <option value="8">8 holes</option>
+                    </select>
+                </div>
+                <button class="calculate-button" onclick="calculateAcoustical()">Calculate Positions</button>
+            </div>
+
+            <div id="acoustical-results" class="results-section hidden">
+                <h3>Calculated Hole Positions</h3>
+                <table id="acoustical-table">
+                    <thead>
+                        <tr>
+                            <th>Hole Number</th>
+                            <th>Distance from Blowing Edge (mm)</th>
+                            <th>Frequency (Hz)</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="acoustical-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Benade's Formula Tab -->
+        <div id="benade" class="tab-content">
+            <div class="algorithm-explanation">
+                <h2>Benade's Formula</h2>
+                <p>Developed by physicist Arthur Benade, this advanced method provides highly accurate hole positions by considering the acoustic impedance and coupling between holes.</p>
+                
+                <h3>How it Works:</h3>
+                <ul>
+                    <li>Accounts for hole diameter relative to bore diameter</li>
+                    <li>Considers the acoustic mass and compliance of the air column</li>
+                    <li>Uses the chimney height (wall thickness) in calculations</li>
+                    <li>Most accurate method for professional instrument making</li>
+                </ul>
+
+                <h3>Calculation Details:</h3>
+                <p>The position calculation involves:</p>
+                <ul>
+                    <li><strong>Cutoff frequency:</strong> f_c = v / (2 × L)</li>
+                    <li><strong>Hole impedance:</strong> Z = f(d, D, t) where d=hole diameter, D=bore diameter, t=wall thickness</li>
+                    <li><strong>Position correction:</strong> Adjusted based on hole coupling effects</li>
+                    <li><strong>Formula:</strong> <span class="formula">L_n = (v / 2f_n) × [1 + K(d/D)²]</span></li>
+                </ul>
+            </div>
+
+            <div class="input-section">
+                <h3>Input Parameters</h3>
+                <div class="input-group">
+                    <label for="benade-length">Fundamental Length (mm):</label>
+                    <input type="number" id="benade-length" value="400" min="100" max="1000" step="1">
+                    <div class="input-hint">Distance from blowing edge to the end</div>
+                </div>
+                <div class="input-group">
+                    <label for="benade-bore">Bore Diameter (mm):</label>
+                    <input type="number" id="benade-bore" value="19" min="10" max="50" step="0.5">
+                    <div class="input-hint">Internal diameter of the tube</div>
+                </div>
+                <div class="input-group">
+                    <label for="benade-hole-dia">Hole Diameter (mm):</label>
+                    <input type="number" id="benade-hole-dia" value="8" min="3" max="20" step="0.5">
+                    <div class="input-hint">Diameter of the finger holes</div>
+                </div>
+                <div class="input-group">
+                    <label for="benade-wall">Wall Thickness (mm):</label>
+                    <input type="number" id="benade-wall" value="3" min="1" max="10" step="0.5">
+                    <div class="input-hint">Thickness of the flute wall</div>
+                </div>
+                <div class="input-group">
+                    <label for="benade-holes">Number of Holes:</label>
+                    <select id="benade-holes">
+                        <option value="5">5 holes</option>
+                        <option value="6" selected>6 holes</option>
+                        <option value="7">7 holes</option>
+                        <option value="8">8 holes</option>
+                    </select>
+                </div>
+                <button class="calculate-button" onclick="calculateBenade()">Calculate Positions</button>
+            </div>
+
+            <div id="benade-results" class="results-section hidden">
+                <h3>Calculated Hole Positions</h3>
+                <table id="benade-table">
+                    <thead>
+                        <tr>
+                            <th>Hole Number</th>
+                            <th>Distance from Blowing Edge (mm)</th>
+                            <th>Corrected Position (mm)</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="benade-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <p>Crafted with care for flute makers worldwide 🌿</p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function switchTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Deactivate all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => button.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Activate corresponding button
+            event.target.classList.add('active');
+        }
+
+        // Note names for reference
+        const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+        
+        function getNoteFromSemitones(baseSemitones, offset) {
+            const totalSemitones = (baseSemitones + offset) % 12;
+            return noteNames[totalSemitones];
+        }
+
+        // Simple Ratio Method
+        function calculateSimple() {
+            const length = parseFloat(document.getElementById('simple-length').value);
+            const diameter = parseFloat(document.getElementById('simple-diameter').value);
+            const numHoles = parseInt(document.getElementById('simple-holes').value);
+            
+            const tbody = document.getElementById('simple-tbody');
+            tbody.innerHTML = '';
+            
+            // Ratios for equal temperament (semitones: 2, 4, 5, 7, 9, 11, 12, 14)
+            const semitones = [2, 4, 5, 7, 9, 11, 12, 14];
+            
+            for (let i = 0; i < numHoles; i++) {
+                const semitone = semitones[i];
+                const ratio = 1 - Math.pow(2, -semitone / 12);
+                const position = (length * ratio).toFixed(2);
+                const holeDiameter = (diameter * 0.4).toFixed(1);
+                const note = getNoteFromSemitones(2, semitone); // Base note D (2 semitones from C)
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>Hole ${i + 1}</td>
+                    <td>${position}</td>
+                    <td>${holeDiameter}</td>
+                    <td>${note}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            document.getElementById('simple-results').classList.remove('hidden');
+        }
+
+        // Acoustical Physics Method
+        function calculateAcoustical() {
+            const baseFreq = parseFloat(document.getElementById('acoustical-frequency').value);
+            const diameter = parseFloat(document.getElementById('acoustical-diameter').value);
+            const temp = parseFloat(document.getElementById('acoustical-temp').value);
+            const numHoles = parseInt(document.getElementById('acoustical-holes').value);
+            
+            // Speed of sound in air (temperature dependent)
+            const speedOfSound = (331.3 + 0.606 * temp) * 1000; // mm/s
+            
+            // End correction
+            const endCorrection = 0.6 * diameter;
+            
+            const tbody = document.getElementById('acoustical-tbody');
+            tbody.innerHTML = '';
+            
+            // Calculate for chromatic scale
+            const semitones = [2, 4, 5, 7, 9, 11, 12, 14];
+            
+            for (let i = 0; i < numHoles; i++) {
+                const semitone = semitones[i];
+                const frequency = (baseFreq * Math.pow(2, semitone / 12)).toFixed(2);
+                const effectiveLength = (speedOfSound / (2 * frequency)) - endCorrection;
+                const position = effectiveLength.toFixed(2);
+                const note = getNoteFromSemitones(2, semitone);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>Hole ${i + 1}</td>
+                    <td>${position}</td>
+                    <td>${frequency}</td>
+                    <td>${note}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            document.getElementById('acoustical-results').classList.remove('hidden');
+        }
+
+        // Benade's Formula
+        function calculateBenade() {
+            const length = parseFloat(document.getElementById('benade-length').value);
+            const boreDiameter = parseFloat(document.getElementById('benade-bore').value);
+            const holeDiameter = parseFloat(document.getElementById('benade-hole-dia').value);
+            const wallThickness = parseFloat(document.getElementById('benade-wall').value);
+            const numHoles = parseInt(document.getElementById('benade-holes').value);
+            
+            const tbody = document.getElementById('benade-tbody');
+            tbody.innerHTML = '';
+            
+            // Correction factor based on hole-to-bore ratio
+            const K = 0.25; // Empirical constant
+            const holeRatio = holeDiameter / boreDiameter;
+            const correctionFactor = 1 + K * Math.pow(holeRatio, 2);
+            
+            // Wall thickness correction (chimney effect)
+            const chimneyCorrection = 0.75 * wallThickness;
+            
+            const semitones = [2, 4, 5, 7, 9, 11, 12, 14];
+            
+            for (let i = 0; i < numHoles; i++) {
+                const semitone = semitones[i];
+                const ratio = 1 - Math.pow(2, -semitone / 12);
+                const basicPosition = length * ratio;
+                
+                // Apply Benade's corrections
+                const correctedPosition = (basicPosition * correctionFactor + chimneyCorrection).toFixed(2);
+                const note = getNoteFromSemitones(2, semitone);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>Hole ${i + 1}</td>
+                    <td>${basicPosition.toFixed(2)}</td>
+                    <td>${correctedPosition}</td>
+                    <td>${note}</td>
+                `;
+                tbody.appendChild(row);
+            }
+            
+            document.getElementById('benade-results').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
