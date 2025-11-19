@@ -5,7 +5,7 @@ A beautiful single-page web application for calculating precise hole positions w
 ## Features
 
 - **Three Calculation Methods:**
-  - **Simple Ratio Method** - Traditional approach using mathematical ratios based on equal temperament
+  - **Xiao Flute - Sanfen Sunyi Method (三分损益法)** - Ancient Chinese method for calculating musical intervals with acoustic corrections, perfect for crafting Xiao flutes
   - **Acoustical Physics Method** - Uses fundamental acoustic principles with speed of sound calculations
   - **Benade's Formula** - Advanced method by physicist Arthur Benade for professional instrument making
 
@@ -32,8 +32,8 @@ A beautiful single-page web application for calculating precise hole positions w
 
 ## Calculation Methods Explained
 
-### Simple Ratio Method
-Best for beginners. Uses simple mathematical ratios derived from the equal temperament scale (12th root of 2). Calculates hole positions as ratios of the fundamental length.
+### Xiao Flute - Sanfen Sunyi Method (三分损益法)
+Perfect for traditional Chinese flutes. Uses the ancient Sanfen Sunyi (三分损益法) mathematical method - "divide into three parts, lose/gain one" - to create beautiful pentatonic scales. Start with your bamboo's base frequency in Hz, then choose intervals for each hole. Includes acoustic correction based on temperature and bore diameter.
 
 ### Acoustical Physics Method
 More accurate for precise tuning. Uses the relationship between frequency, speed of sound, and effective length. Accounts for temperature effects and end corrections.

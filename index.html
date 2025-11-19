@@ -355,45 +355,54 @@
         <header>
             <h1>🎵 Flute Crafting<br>Calculator</h1>
             <div class="tabs">
-                <button class="tab-button active" onclick="switchTab('simple')">Simple Ratio Method</button>
+                <button class="tab-button active" onclick="switchTab('simple')">Xiao - Sanfen Sunyi</button>
                 <button class="tab-button" onclick="switchTab('acoustical')">Acoustical Physics Method</button>
                 <button class="tab-button" onclick="switchTab('benade')">Benade's Formula</button>
             </div>
         </header>
 
-        <!-- Simple Ratio Method Tab -->
+        <!-- Simple Ratio Method Tab (Xiao Flute - Sanfen Sunyi) -->
         <div id="simple" class="tab-content active">
             <div class="algorithm-explanation">
                 <div class="algorithm-explanation-header" onclick="toggleAlgorithm('simple-algo')">
-                    <h2>Simple Ratio Method</h2>
+                    <h2>Xiao Flute - Sanfen Sunyi Method (三分损益法)</h2>
                     <span class="algorithm-explanation-toggle" id="simple-algo-toggle">▼</span>
                 </div>
                 <div class="algorithm-explanation-content" id="simple-algo-content">
                     <div class="algorithm-inputs" id="simple-algo-inputs">
                         <strong>Current Inputs:</strong><br>
-                        Fundamental Length: <span id="simple-input-length">400</span> mm<br>
+                        Base Frequency: <span id="simple-input-frequency">440</span> Hz<br>
                         Inner Diameter: <span id="simple-input-diameter">19</span> mm<br>
+                        Temperature: <span id="simple-input-temp">20</span> °C<br>
                         Number of Holes: <span id="simple-input-holes">6</span>
                     </div>
-                    <p>This traditional method uses simple mathematical ratios based on the fundamental length of the flute. It's the easiest approach for beginners and produces good results for basic flutes.</p>
+                    <p>The Sanfen Sunyi (三分损益法) is an ancient Chinese mathematical method for calculating musical intervals, perfect for crafting Xiao flutes. This method creates beautiful pentatonic scales by alternating between adding and subtracting thirds.</p>
                     
                     <h3>How it Works:</h3>
                     <ul>
-                        <li>The fundamental length determines the lowest note the flute can play</li>
-                        <li>Hole positions are calculated as ratios of this fundamental length</li>
-                        <li>Each hole position follows the formula: <span class="formula">Position = Fundamental Length × Ratio</span></li>
-                        <li>Ratios are derived from the equal temperament scale (12th root of 2)</li>
+                        <li>Start with the base frequency of your bamboo (the fundamental note)</li>
+                        <li><strong>San Fen Sun Yi (三分损一):</strong> "Divide into three parts, lose one" - multiply frequency by 3/2 (perfect fifth up)</li>
+                        <li><strong>San Fen Yi Yi (三分益一):</strong> "Divide into three parts, gain one" - multiply frequency by 4/3 (perfect fourth up)</li>
+                        <li>For each hole, you can choose the next interval to create your desired scale</li>
+                        <li>Includes acoustic correction based on bore diameter and temperature</li>
                     </ul>
 
                     <h3>Calculation Details:</h3>
-                    <p>For a 6-hole flute in the key of D, the ratios are calculated as:</p>
+                    <p>The effective length for each note is calculated as:</p>
                     <ul>
-                        <li><strong>Hole 1:</strong> L × (1 - 1/2^(2/12)) ≈ L × 0.891</li>
-                        <li><strong>Hole 2:</strong> L × (1 - 1/2^(4/12)) ≈ L × 0.794</li>
-                        <li><strong>Hole 3:</strong> L × (1 - 1/2^(5/12)) ≈ L × 0.749</li>
-                        <li><strong>Hole 4:</strong> L × (1 - 1/2^(7/12)) ≈ L × 0.667</li>
-                        <li><strong>Hole 5:</strong> L × (1 - 1/2^(9/12)) ≈ L × 0.595</li>
-                        <li><strong>Hole 6:</strong> L × (1 - 1/2^(11/12)) ≈ L × 0.529</li>
+                        <li><strong>Speed of sound:</strong> v = 331.3 + 0.606 × T (m/s) where T is temperature in °C</li>
+                        <li><strong>Effective length:</strong> L_eff = v / (2 × f)</li>
+                        <li><strong>End correction:</strong> δ = 0.6 × diameter (acoustic correction)</li>
+                        <li><strong>Hole position:</strong> Position = L_eff - δ (from blowing edge)</li>
+                    </ul>
+
+                    <h3>Traditional Intervals:</h3>
+                    <ul>
+                        <li><strong>Perfect Fifth (3/2):</strong> Up 7 semitones, ratio 1.5</li>
+                        <li><strong>Perfect Fourth (4/3):</strong> Up 5 semitones, ratio 1.333</li>
+                        <li><strong>Major Third (5/4):</strong> Up 4 semitones, ratio 1.25</li>
+                        <li><strong>Minor Third (6/5):</strong> Up 3 semitones, ratio 1.2</li>
+                        <li><strong>Major Second (9/8):</strong> Up 2 semitones, ratio 1.125</li>
                     </ul>
                 </div>
             </div>
@@ -401,14 +410,19 @@
             <div class="input-section">
                 <h3>Input Parameters</h3>
                 <div class="input-group">
-                    <label for="simple-length">Fundamental Length (mm):</label>
-                    <input type="number" id="simple-length" value="400" min="100" max="1000" step="1" oninput="updateSimpleInputs()">
-                    <div class="input-hint">Distance from blowing edge to the end of the flute</div>
+                    <label for="simple-base-frequency">Base Frequency (Hz):</label>
+                    <input type="number" id="simple-base-frequency" value="440" min="100" max="1000" step="0.01" oninput="updateSimpleInputs()">
+                    <div class="input-hint">Fundamental frequency of your bamboo (A4 = 440 Hz, D4 = 293.66 Hz, G4 = 392 Hz)</div>
                 </div>
                 <div class="input-group">
                     <label for="simple-diameter">Inner Diameter (mm):</label>
                     <input type="number" id="simple-diameter" value="19" min="10" max="50" step="0.5" oninput="updateSimpleInputs()">
                     <div class="input-hint">Internal bore diameter of the flute</div>
+                </div>
+                <div class="input-group">
+                    <label for="simple-temp">Temperature (°C):</label>
+                    <input type="number" id="simple-temp" value="20" min="-10" max="40" step="1" oninput="updateSimpleInputs()">
+                    <div class="input-hint">Ambient temperature (affects speed of sound)</div>
                 </div>
                 <div class="input-group">
                     <label for="simple-holes">Number of Holes:</label>
@@ -422,14 +436,22 @@
                 <button class="calculate-button" onclick="calculateSimple()">Calculate Positions</button>
             </div>
 
+            <div id="simple-interactive" class="input-section" style="display: none;">
+                <h3>Build Your Scale - Hole by Hole</h3>
+                <div id="simple-hole-builder">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+
             <div id="simple-results" class="results-section hidden">
                 <h3>Calculated Hole Positions</h3>
                 <table id="simple-table">
                     <thead>
                         <tr>
                             <th>Hole Number</th>
+                            <th>Frequency (Hz)</th>
                             <th>Distance from Blowing Edge (mm)</th>
-                            <th>Suggested Diameter (mm)</th>
+                            <th>Interval</th>
                             <th>Note</th>
                         </tr>
                     </thead>
@@ -626,8 +648,9 @@
 
         // Update Simple inputs in real-time
         function updateSimpleInputs() {
-            document.getElementById('simple-input-length').textContent = document.getElementById('simple-length').value;
+            document.getElementById('simple-input-frequency').textContent = document.getElementById('simple-base-frequency').value;
             document.getElementById('simple-input-diameter').textContent = document.getElementById('simple-diameter').value;
+            document.getElementById('simple-input-temp').textContent = document.getElementById('simple-temp').value;
             document.getElementById('simple-input-holes').textContent = document.getElementById('simple-holes').value;
         }
 
@@ -673,36 +696,143 @@
             return noteNames[totalSemitones];
         }
 
-        // Simple Ratio Method
+        // Available interval ratios for Sanfen Sunyi method
+        const intervalRatios = [
+            { name: 'Perfect Fifth (San Fen Sun Yi)', ratio: 3/2, semitones: 7 },
+            { name: 'Perfect Fourth (San Fen Yi Yi)', ratio: 4/3, semitones: 5 },
+            { name: 'Major Third', ratio: 5/4, semitones: 4 },
+            { name: 'Minor Third', ratio: 6/5, semitones: 3 },
+            { name: 'Major Second', ratio: 9/8, semitones: 2 },
+            { name: 'Minor Second', ratio: 16/15, semitones: 1 },
+            { name: 'Major Sixth', ratio: 5/3, semitones: 9 },
+            { name: 'Minor Seventh', ratio: 16/9, semitones: 10 }
+        ];
+
+        // State for interactive hole building
+        let holeFrequencies = [];
+        let selectedIntervals = [];
+
+        // Simple Ratio Method (Xiao Flute - Sanfen Sunyi)
         function calculateSimple() {
-            const length = parseFloat(document.getElementById('simple-length').value);
+            const baseFreq = parseFloat(document.getElementById('simple-base-frequency').value);
             const diameter = parseFloat(document.getElementById('simple-diameter').value);
+            const temp = parseFloat(document.getElementById('simple-temp').value);
             const numHoles = parseInt(document.getElementById('simple-holes').value);
+            
+            // Initialize with base frequency
+            holeFrequencies = [baseFreq];
+            selectedIntervals = [];
+            
+            // Clear results table
+            const tbody = document.getElementById('simple-tbody');
+            tbody.innerHTML = '';
+            
+            // Show interactive builder
+            document.getElementById('simple-interactive').style.display = 'block';
+            
+            // Show results section (but empty initially)
+            document.getElementById('simple-results').classList.remove('hidden');
+            
+            // Build the interactive interface starting from hole 1
+            buildHoleSelector(0, numHoles);
+        }
+
+        function buildHoleSelector(holeIndex, totalHoles) {
+            const builder = document.getElementById('simple-hole-builder');
+            builder.innerHTML = '';
+            
+            if (holeIndex >= totalHoles) {
+                // All holes configured
+                builder.innerHTML = '<p style="color: #6d5738; font-weight: bold;">✓ All holes configured! The table below shows your custom scale.</p>';
+                return;
+            }
+            
+            const currentFreq = holeFrequencies[holeIndex];
+            
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <div style="background: #fff8f0; padding: 20px; border-radius: 8px; border: 2px solid #d4b896;">
+                    <h4 style="color: #6d5738; margin-bottom: 15px;">Configure Hole ${holeIndex + 1}</h4>
+                    <p style="margin-bottom: 10px;"><strong>Current Frequency:</strong> ${currentFreq.toFixed(2)} Hz (${getNoteName(currentFreq)})</p>
+                    <label style="display: block; margin-bottom: 8px; color: #5d4a37; font-weight: bold;">Choose next interval:</label>
+                    <select id="interval-select-${holeIndex}" style="width: 100%; padding: 12px; border: 2px solid #d4b896; border-radius: 8px; font-size: 1em; background: #fffcf7; font-family: 'Georgia', 'Palatino', serif; margin-bottom: 15px;">
+                        ${intervalRatios.map((interval, idx) => {
+                            const nextFreq = currentFreq * interval.ratio;
+                            return `<option value="${idx}">${interval.name} → ${nextFreq.toFixed(2)} Hz (${getNoteName(nextFreq)})</option>`;
+                        }).join('')}
+                    </select>
+                    <button onclick="selectInterval(${holeIndex}, ${totalHoles})" style="background: linear-gradient(135deg, #8b6f47 0%, #6d5738 100%); color: white; padding: 12px 30px; border: none; border-radius: 8px; font-size: 1em; font-weight: bold; cursor: pointer; font-family: 'Georgia', 'Palatino', serif;">
+                        ${holeIndex < totalHoles - 1 ? 'Next Hole →' : 'Finish Scale'}
+                    </button>
+                </div>
+            `;
+            builder.appendChild(div);
+        }
+
+        function selectInterval(holeIndex, totalHoles) {
+            const selectElement = document.getElementById(`interval-select-${holeIndex}`);
+            const selectedIdx = parseInt(selectElement.value);
+            const interval = intervalRatios[selectedIdx];
+            
+            const currentFreq = holeFrequencies[holeIndex];
+            const nextFreq = currentFreq * interval.ratio;
+            
+            holeFrequencies.push(nextFreq);
+            selectedIntervals.push(interval);
+            
+            // Recalculate table with selected intervals
+            updateTableWithCustomIntervals();
+            
+            // Build next hole selector or finish
+            if (holeIndex + 1 < totalHoles) {
+                buildHoleSelector(holeIndex + 1, totalHoles);
+            } else {
+                buildHoleSelector(totalHoles, totalHoles); // Show completion message
+            }
+        }
+
+        function updateTableWithCustomIntervals() {
+            const diameter = parseFloat(document.getElementById('simple-diameter').value);
+            const temp = parseFloat(document.getElementById('simple-temp').value);
+            const speedOfSound = (331.3 + 0.606 * temp) * 1000; // mm/s
+            const endCorrection = 0.6 * diameter;
             
             const tbody = document.getElementById('simple-tbody');
             tbody.innerHTML = '';
             
-            // Ratios for equal temperament (semitones: 2, 4, 5, 7, 9, 11, 12, 14)
-            const semitones = [2, 4, 5, 7, 9, 11, 12, 14];
-            
-            for (let i = 0; i < numHoles; i++) {
-                const semitone = semitones[i];
-                const ratio = 1 - Math.pow(2, -semitone / 12);
-                const position = (length * ratio).toFixed(2);
-                const holeDiameter = (diameter * 0.4).toFixed(1);
-                const note = getNoteFromSemitones(2, semitone); // Base note D (2 semitones from C)
+            for (let i = 0; i < selectedIntervals.length; i++) {
+                const frequency = holeFrequencies[i + 1];
+                const interval = selectedIntervals[i];
+                
+                const effectiveLength = (speedOfSound / (2 * frequency)) - endCorrection;
+                const position = effectiveLength.toFixed(2);
+                const note = getNoteName(frequency);
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>Hole ${i + 1}</td>
+                    <td>${frequency.toFixed(2)}</td>
                     <td>${position}</td>
-                    <td>${holeDiameter}</td>
+                    <td>${interval.name} (${interval.ratio.toFixed(3)})</td>
                     <td>${note}</td>
                 `;
                 tbody.appendChild(row);
             }
             
             document.getElementById('simple-results').classList.remove('hidden');
+        }
+
+        function getNoteName(frequency) {
+            // A4 = 440 Hz
+            const A4 = 440;
+            const C0 = A4 * Math.pow(2, -4.75); // C0 frequency
+            
+            const halfSteps = 12 * Math.log2(frequency / C0);
+            const noteIndex = Math.round(halfSteps) % 12;
+            const octave = Math.floor(Math.round(halfSteps) / 12);
+            
+            const noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+            return `${noteNames[noteIndex]}${octave}`;
         }
 
         // Acoustical Physics Method
