@@ -40,12 +40,14 @@ function toggleStep(stepId) {
     const content = step.querySelector('.step-content');
     const toggle = step.querySelector('.step-toggle');
     
-    if (content.style.display === 'none' || !content.style.display) {
-        content.style.display = 'block';
-        toggle.textContent = '▼';
-    } else {
-        content.style.display = 'none';
-        toggle.textContent = '▶';
+    if (content && toggle) {
+        if (content.style.display === 'none' || !content.style.display) {
+            content.style.display = 'block';
+            toggle.textContent = '▼';
+        } else {
+            content.style.display = 'none';
+            toggle.textContent = '▶';
+        }
     }
 }
 
@@ -56,7 +58,7 @@ function nextAcousticalStep(stepNumber) {
     allSteps.forEach(step => {
         const content = step.querySelector('.step-content');
         const toggle = step.querySelector('.step-toggle');
-        if (content) {
+        if (content && toggle) {
             content.style.display = 'none';
             toggle.textContent = '▶';
         }
@@ -68,7 +70,7 @@ function nextAcousticalStep(stepNumber) {
         nextStep.style.display = 'block';
         const content = nextStep.querySelector('.step-content');
         const toggle = nextStep.querySelector('.step-toggle');
-        if (content) {
+        if (content && toggle) {
             content.style.display = 'block';
             toggle.textContent = '▼';
         }
