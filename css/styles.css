@@ -330,6 +330,7 @@ header h1 {
 }
 
 /* Responsive grid for input fields on larger screens */
+/* Note: On mobile (<768px), input groups naturally stack vertically due to default block layout */
 @media (min-width: 768px) {
     .input-section {
         max-width: 800px;
@@ -349,6 +350,16 @@ header h1 {
     
     .input-grid.full-width {
         grid-template-columns: 1fr;
+    }
+    
+    /* Three column layout for frequency, diameter, temperature */
+    .input-grid-three-cols {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+    
+    /* Model selection grid: 25% for holes, 75% for model */
+    .input-grid-model-selection {
+        grid-template-columns: 1fr 3fr;
     }
 }
 
