@@ -80,7 +80,7 @@
 
             <div class="input-section">
                 <h3 data-i18n="input_parameters">Input Parameters</h3>
-                <div class="input-grid">
+                <div class="input-grid input-grid-three-cols">
                     <div class="input-group">
                         <label for="simple-base-frequency" data-i18n="base_frequency">Base Frequency (Hz):</label>
                         <input type="number" id="simple-base-frequency" value="440" min="100" max="1000" step="1" oninput="updateSimpleInputs()">
@@ -96,6 +96,13 @@
                         <input type="number" id="simple-temp" value="20" min="-10" max="40" step="1" oninput="updateSimpleInputs()">
                         <div class="input-hint" data-i18n="temperature_hint">Ambient temperature (affects speed of sound)</div>
                     </div>
+                </div>
+                <button id="simple-calculate-button" class="calculate-button" onclick="calculateSimple()" data-i18n="calculate_positions">Calculate Positions</button>
+            </div>
+
+            <div id="simple-model-selection" class="input-section" style="display: none;">
+                <h3 id="model-selection-title" data-i18n="select_model">Select Xiao Model</h3>
+                <div class="input-grid input-grid-model-selection">
                     <div class="input-group">
                         <label for="simple-holes" data-i18n="number_of_holes">Number of Holes:</label>
                         <select id="simple-holes" onchange="onHoleNumberChange()">
@@ -106,17 +113,12 @@
                             <option value="8" data-i18n="holes_8">8 holes</option>
                         </select>
                     </div>
-                </div>
-                <button id="simple-calculate-button" class="calculate-button" onclick="calculateSimple()" data-i18n="calculate_positions">Calculate Positions</button>
-            </div>
-
-            <div id="simple-model-selection" class="input-section" style="display: none;">
-                <h3 id="model-selection-title" data-i18n="select_model">Select Xiao Model</h3>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 8px; color: #5d4a37; font-weight: bold;" data-i18n="choose_model">Choose a model:</label>
-                    <select id="simple-model" onchange="onModelChange()" style="width: 100%; padding: 12px; border: 2px solid #d4b896; border-radius: 8px; font-size: 1em; background: #fffcf7; font-family: 'Georgia', 'Palatino', serif;">
-                        <option value="" data-i18n="select_model_placeholder">-- Select a model --</option>
-                    </select>
+                    <div class="input-group">
+                        <label for="simple-model" data-i18n="choose_model">Choose a model:</label>
+                        <select id="simple-model" onchange="onModelChange()">
+                            <option value="" data-i18n="select_model_placeholder">-- Select a model --</option>
+                        </select>
+                    </div>
                 </div>
                 <div id="model-description" style="background: #fff8f0; padding: 20px; border-radius: 8px; border-left: 4px solid #8b6f47; display: none;">
                     <!-- Model description will be inserted here -->
