@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flute Crafting Calculator</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-i18n-html="app_title">🎵 Flute Crafting<br>Calculator</h1>
+            <div class="language-selector">
+                <button onclick="switchLanguage('en')" data-lang="en" title="English">🇬🇧</button>
+                <button onclick="switchLanguage('fr')" data-lang="fr" title="Français">🇫🇷</button>
+            </div>
+            <div class="tabs">
+                <button class="tab-button active" onclick="switchTab('simple')" data-i18n="tab_xiao">Xiao - Sanfen Sunyi</button>
+                <button class="tab-button" onclick="switchTab('acoustical')" data-i18n="tab_acoustical">Acoustical Physics Method</button>
+                <button class="tab-button" onclick="switchTab('benade')" data-i18n="tab_benade">Benade's Formula</button>
+            </div>
+        </header>
+
+        <!-- Simple Ratio Method Tab (Xiao Flute - Sanfen Sunyi) -->
+        <div id="simple" class="tab-content active">
+            <div class="algorithm-explanation">
+                <div class="algorithm-explanation-header" onclick="toggleAlgorithm('simple-algo')">
+                    <h2 data-i18n="algo_xiao_title">Xiao Flute - Sanfen Sunyi Method (三分损益法)</h2>
+                    <span class="algorithm-explanation-toggle" id="simple-algo-toggle">▼</span>
+                </div>
+                <div class="algorithm-explanation-content" id="simple-algo-content">
+                    <div class="algorithm-inputs" id="simple-algo-inputs">
+                        <strong data-i18n="algo_current_inputs">Current Inputs:</strong><br>
+                        <span data-i18n="algo_base_frequency">Base Frequency:</span> <span id="simple-input-frequency">440</span> Hz<br>
+                        <span data-i18n="algo_inner_diameter">Inner Diameter:</span> <span id="simple-input-diameter">19</span> mm<br>
+                        <span data-i18n="algo_temperature">Temperature:</span> <span id="simple-input-temp">20</span> °C<br>
+                        <span data-i18n="algo_number_of_holes">Number of Holes:</span> <span id="simple-input-holes">6</span>
+                    </div>
+                    <p data-i18n="algo_xiao_intro">The Sanfen Sunyi (三分损益法) is an ancient Chinese mathematical method for calculating musical intervals, perfect for crafting Xiao flutes. This method creates beautiful pentatonic scales by alternating between adding and subtracting thirds.</p>
+                    
+                    <h3 data-i18n="algo_xiao_how_title">How it Works:</h3>
+                    <ul>
+                        <li data-i18n="algo_xiao_how_1">Start with the base frequency of your bamboo (the fundamental note)</li>
+                        <li data-i18n-html="algo_xiao_how_2"><strong>San Fen Sun Yi (三分损一):</strong> "Divide into three parts, lose one" - multiply frequency by 3/2 (perfect fifth up)</li>
+                        <li data-i18n-html="algo_xiao_how_3"><strong>San Fen Yi Yi (三分益一):</strong> "Divide into three parts, gain one" - multiply frequency by 4/3 (perfect fourth up)</li>
+                        <li data-i18n="algo_xiao_how_4">For each hole, you can choose the next interval to create your desired scale</li>
+                        <li data-i18n="algo_xiao_how_5">Includes acoustic correction based on bore diameter and temperature</li>
+                    </ul>
+
+                    <h3 data-i18n="algo_calc_details_title">Calculation Details:</h3>
+                    <p data-i18n="algo_calc_details_intro">The effective length for each note is calculated as:</p>
+                    <ul>
+                        <li data-i18n-html="algo_xiao_calc_1"><strong>Speed of sound:</strong> v = 331.3 + 0.606 × T (m/s) where T is temperature in °C</li>
+                        <li data-i18n-html="algo_xiao_calc_2"><strong>Effective length:</strong> L_eff = v / (2 × f)</li>
+                        <li data-i18n-html="algo_xiao_calc_3"><strong>End correction:</strong> δ = 0.6 × diameter (acoustic correction)</li>
+                        <li data-i18n-html="algo_xiao_calc_4"><strong>Hole position:</strong> Position = L_eff - δ (from blowing edge)</li>
+                    </ul>
+
+                    <h3 data-i18n="algo_xiao_intervals_title">Traditional Intervals:</h3>
+                    <ul>
+                        <li data-i18n-html="algo_xiao_interval_1"><strong>Perfect Fifth (3/2):</strong> Up 7 semitones, ratio 1.5</li>
+                        <li data-i18n-html="algo_xiao_interval_2"><strong>Perfect Fourth (4/3):</strong> Up 5 semitones, ratio 1.333</li>
+                        <li data-i18n-html="algo_xiao_interval_3"><strong>Major Third (5/4):</strong> Up 4 semitones, ratio 1.25</li>
+                        <li data-i18n-html="algo_xiao_interval_4"><strong>Minor Third (6/5):</strong> Up 3 semitones, ratio 1.2</li>
+                        <li data-i18n-html="algo_xiao_interval_5"><strong>Major Second (9/8):</strong> Up 2 semitones, ratio 1.125</li>
+                    </ul>
+
+                    <div style="background: #fff3cd; border: 3px solid #856404; border-radius: 8px; padding: 20px; margin-top: 20px;">
+                        <h3 style="color: #856404; margin-bottom: 15px;" data-i18n="algo_empirical_title">⚠️ Empirical Approach for Flute Crafters</h3>
+                        <p style="color: #856404;" data-i18n-html="algo_empirical_intro"><strong>Important:</strong> This calculator provides theoretical positions, but flute making requires an empirical approach:</p>
+                        <ul style="color: #856404;">
+                            <li data-i18n-html="algo_empirical_1"><strong>Start small:</strong> Begin by drilling holes smaller than calculated</li>
+                            <li data-i18n-html="algo_empirical_2"><strong>Test and adjust:</strong> Gradually enlarge each hole while testing the pitch</li>
+                            <li data-i18n-html="algo_empirical_3"><strong>Work systematically:</strong> Start from the lowest pitch (furthest hole) and move toward the highest (closest to blowing edge)</li>
+                            <li data-i18n-html="algo_empirical_4"><strong>Fine-tune:</strong> Small adjustments in hole size significantly affect pitch</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h3 data-i18n="input_parameters">Input Parameters</h3>
+                <div class="input-grid input-grid-three-cols">
+                    <div class="input-group">
+                        <label for="simple-base-frequency" data-i18n="base_frequency">Base Frequency (Hz):</label>
+                        <input type="number" id="simple-base-frequency" value="440" min="100" max="1000" step="1" oninput="updateSimpleInputs()">
+                        <div class="input-hint" data-i18n="base_frequency_hint">Fundamental frequency of your bamboo (A4 = 440 Hz, D4 = 293.66 Hz, G4 = 392 Hz)</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="simple-diameter" data-i18n="inner_diameter">Inner Diameter (mm):</label>
+                        <input type="number" id="simple-diameter" value="19" min="10" max="50" step="0.5" oninput="updateSimpleInputs()">
+                        <div class="input-hint" data-i18n="inner_diameter_hint">Internal bore diameter of the flute</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="simple-temp" data-i18n="temperature">Temperature (°C):</label>
+                        <input type="number" id="simple-temp" value="20" min="-10" max="40" step="1" oninput="updateSimpleInputs()">
+                        <div class="input-hint" data-i18n="temperature_hint">Ambient temperature (affects speed of sound)</div>
+                    </div>
+                </div>
+                <button id="simple-calculate-button" class="calculate-button" onclick="calculateSimple()" data-i18n="calculate_positions">Calculate Positions</button>
+            </div>
+
+            <div id="simple-model-selection" class="input-section" style="display: none;">
+                <h3 id="model-selection-title" data-i18n="select_model">Select Xiao Model</h3>
+                <div class="input-grid input-grid-model-selection">
+                    <div class="input-group">
+                        <label for="simple-holes" data-i18n="number_of_holes">Number of Holes:</label>
+                        <select id="simple-holes" onchange="onHoleNumberChange()">
+                            <option value="4" data-i18n="holes_4">4 holes (ultra minimaliste)</option>
+                            <option value="5" data-i18n="holes_5">5 holes (super traditionnel)</option>
+                            <option value="6" selected data-i18n="holes_6">6 holes (le plus traditionnel)</option>
+                            <option value="7" data-i18n="holes_7">7 holes (rare)</option>
+                            <option value="8" data-i18n="holes_8">8 holes</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="simple-model" data-i18n="choose_model">Choose a model:</label>
+                        <select id="simple-model" onchange="onModelChange()">
+                            <option value="" data-i18n="select_model_placeholder">-- Select a model --</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="model-description" style="background: #fff8f0; padding: 20px; border-radius: 8px; border-left: 4px solid #8b6f47; display: none;">
+                    <!-- Model description will be inserted here -->
+                </div>
+            </div>
+
+            <div id="simple-interactive" class="input-section" style="display: none;">
+                <h3 data-i18n="build_scale">Build Your Scale - Hole by Hole</h3>
+                <div id="simple-hole-builder">
+                    <!-- Dynamic content will be inserted here -->
+                </div>
+            </div>
+
+            <div id="simple-results" class="results-section hidden">
+                <h3 data-i18n="calculated_positions">Calculated Hole Positions</h3>
+                <button class="visualization-button" onclick="showVisualization()" data-i18n="visualize_flute">👁️ Visualisation de la flûte</button>
+                <table id="simple-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="table_hole">Trou</th>
+                            <th data-i18n="table_distance_from_edge">Distance from Blowing Edge (mm)</th>
+                            <th data-i18n="table_distance_to_next">Distance to Next Hole (mm)</th>
+                            <th data-i18n="table_interval">Interval</th>
+                            <th data-i18n="table_note">Note</th>
+                            <th data-i18n="table_frequency">Frequency (Hz)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="simple-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Acoustical Physics Method Tab -->
+        <div id="acoustical" class="tab-content">
+            <div class="algorithm-explanation">
+                <div class="algorithm-explanation-header" onclick="toggleAlgorithm('acoustical-algo')">
+                    <h2 data-i18n="algo_acoustical_title">Acoustical Physics Method</h2>
+                    <span class="algorithm-explanation-toggle" id="acoustical-algo-toggle">▼</span>
+                </div>
+                <div class="algorithm-explanation-content" id="acoustical-algo-content">
+                    <div class="algorithm-inputs" id="acoustical-algo-inputs">
+                        <strong data-i18n="algo_current_inputs">Current Inputs:</strong><br>
+                        <span data-i18n="algo_base_frequency">Base Frequency:</span> <span id="acoustical-input-frequency">293.66</span> Hz<br>
+                        <span data-i18n="algo_inner_diameter">Inner Diameter:</span> <span id="acoustical-input-diameter">19</span> mm<br>
+                        <span data-i18n="algo_temperature">Temperature:</span> <span id="acoustical-input-temp">20</span> °C<br>
+                        <span data-i18n="algo_number_of_holes">Number of Holes:</span> <span id="acoustical-input-holes">6</span>
+                    </div>
+                    <p data-i18n="algo_acoustical_intro">This method uses fundamental acoustic principles to calculate hole positions based on the speed of sound, desired frequencies, and the physical properties of the flute.</p>
+                    
+                    <h3 data-i18n="algo_xiao_how_title">How it Works:</h3>
+                    <ul>
+                        <li data-i18n-html="algo_acoustical_how_1">Uses the relationship: <span class="formula">f = v / (2 × L)</span> where f is frequency, v is speed of sound, L is effective length</li>
+                        <li data-i18n="algo_acoustical_how_2">Accounts for end corrections based on bore diameter</li>
+                        <li data-i18n="algo_acoustical_how_3">Considers temperature and humidity effects on sound velocity</li>
+                        <li data-i18n="algo_acoustical_how_4">More accurate for precise tuning requirements</li>
+                    </ul>
+
+                    <h3 data-i18n="algo_calc_details_title">Calculation Details:</h3>
+                    <p data-i18n="algo_calc_details_intro">The effective length for each note is calculated as:</p>
+                    <ul>
+                        <li data-i18n-html="algo_acoustical_calc_1"><strong>Speed of sound:</strong> v ≈ 343 m/s (at 20°C)</li>
+                        <li data-i18n-html="algo_acoustical_calc_2"><strong>End correction:</strong> δ ≈ 0.6 × diameter</li>
+                        <li data-i18n-html="algo_acoustical_calc_3"><strong>Effective length:</strong> L_eff = v / (2 × f) - δ</li>
+                        <li data-i18n-html="algo_acoustical_calc_4"><strong>Hole position:</strong> Distance from embouchure hole</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h3>Input Parameters</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="acoustical-frequency">Base Frequency (Hz):</label>
+                        <input type="number" id="acoustical-frequency" value="293.66" min="100" max="1000" step="1" oninput="updateAcousticalInputs()">
+                        <div class="input-hint">Fundamental frequency (D4 = 293.66 Hz)</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="acoustical-diameter">Inner Diameter (mm):</label>
+                        <input type="number" id="acoustical-diameter" value="19" min="10" max="50" step="0.5" oninput="updateAcousticalInputs()">
+                        <div class="input-hint">Internal bore diameter</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="acoustical-temp">Temperature (°C):</label>
+                        <input type="number" id="acoustical-temp" value="20" min="-10" max="40" step="1" oninput="updateAcousticalInputs()">
+                        <div class="input-hint">Ambient temperature affects sound velocity</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="acoustical-holes">Number of Holes:</label>
+                        <select id="acoustical-holes" onchange="updateAcousticalInputs()">
+                            <option value="5">5 holes</option>
+                            <option value="6" selected>6 holes</option>
+                            <option value="7">7 holes</option>
+                            <option value="8">8 holes</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="calculate-button" onclick="calculateAcoustical()">Calculate Positions</button>
+            </div>
+
+            <div id="acoustical-results" class="results-section hidden">
+                <h3>Calculated Hole Positions</h3>
+                <table id="acoustical-table">
+                    <thead>
+                        <tr>
+                            <th>Trou</th>
+                            <th>Distance from Blowing Edge (mm)</th>
+                            <th>Note</th>
+                            <th>Frequency (Hz)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="acoustical-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Benade's Formula Tab -->
+        <div id="benade" class="tab-content">
+            <div class="algorithm-explanation">
+                <div class="algorithm-explanation-header" onclick="toggleAlgorithm('benade-algo')">
+                    <h2 data-i18n="algo_benade_title">Benade's Formula</h2>
+                    <span class="algorithm-explanation-toggle" id="benade-algo-toggle">▼</span>
+                </div>
+                <div class="algorithm-explanation-content" id="benade-algo-content">
+                    <div class="algorithm-inputs" id="benade-algo-inputs">
+                        <strong data-i18n="algo_current_inputs">Current Inputs:</strong><br>
+                        <span data-i18n="algo_fundamental_length">Fundamental Length:</span> <span id="benade-input-length">400</span> mm<br>
+                        <span data-i18n="algo_bore_diameter">Bore Diameter:</span> <span id="benade-input-bore">19</span> mm<br>
+                        <span data-i18n="algo_hole_diameter">Hole Diameter:</span> <span id="benade-input-hole-dia">8</span> mm<br>
+                        <span data-i18n="algo_wall_thickness">Wall Thickness:</span> <span id="benade-input-wall">3</span> mm<br>
+                        <span data-i18n="algo_number_of_holes">Number of Holes:</span> <span id="benade-input-holes">6</span>
+                    </div>
+                    <p data-i18n="algo_benade_intro">Developed by physicist Arthur Benade, this advanced method provides highly accurate hole positions by considering the acoustic impedance and coupling between holes.</p>
+                    
+                    <h3 data-i18n="algo_xiao_how_title">How it Works:</h3>
+                    <ul>
+                        <li data-i18n="algo_benade_how_1">Accounts for hole diameter relative to bore diameter</li>
+                        <li data-i18n="algo_benade_how_2">Considers the acoustic mass and compliance of the air column</li>
+                        <li data-i18n="algo_benade_how_3">Uses the chimney height (wall thickness) in calculations</li>
+                        <li data-i18n="algo_benade_how_4">Most accurate method for professional instrument making</li>
+                    </ul>
+
+                    <h3 data-i18n="algo_calc_details_title">Calculation Details:</h3>
+                    <p data-i18n="algo_benade_calc_intro">The position calculation involves:</p>
+                    <ul>
+                        <li data-i18n-html="algo_benade_calc_1"><strong>Cutoff frequency:</strong> f_c = v / (2 × L)</li>
+                        <li data-i18n-html="algo_benade_calc_2"><strong>Hole impedance:</strong> Z = f(d, D, t) where d=hole diameter, D=bore diameter, t=wall thickness</li>
+                        <li data-i18n-html="algo_benade_calc_3"><strong>Position correction:</strong> Adjusted based on hole coupling effects</li>
+                        <li data-i18n-html="algo_benade_calc_4"><strong>Formula:</strong> <span class="formula">L_n = (v / 2f_n) × [1 + K(d/D)²]</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <h3>Input Parameters</h3>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="benade-length">Fundamental Length (mm):</label>
+                        <input type="number" id="benade-length" value="400" min="100" max="1000" step="1" oninput="updateBenadeInputs()">
+                        <div class="input-hint">Distance from blowing edge to the end</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="benade-bore">Bore Diameter (mm):</label>
+                        <input type="number" id="benade-bore" value="19" min="10" max="50" step="0.5" oninput="updateBenadeInputs()">
+                        <div class="input-hint">Internal diameter of the tube</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="benade-hole-dia">Hole Diameter (mm):</label>
+                        <input type="number" id="benade-hole-dia" value="8" min="3" max="20" step="0.5" oninput="updateBenadeInputs()">
+                        <div class="input-hint">Diameter of the finger holes</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="benade-wall">Wall Thickness (mm):</label>
+                        <input type="number" id="benade-wall" value="3" min="1" max="10" step="0.5" oninput="updateBenadeInputs()">
+                        <div class="input-hint">Thickness of the flute wall</div>
+                    </div>
+                    <div class="input-group">
+                        <label for="benade-holes">Number of Holes:</label>
+                        <select id="benade-holes" onchange="updateBenadeInputs()">
+                            <option value="5">5 holes</option>
+                            <option value="6" selected>6 holes</option>
+                            <option value="7">7 holes</option>
+                            <option value="8">8 holes</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="calculate-button" onclick="calculateBenade()">Calculate Positions</button>
+            </div>
+
+            <div id="benade-results" class="results-section hidden">
+                <h3>Calculated Hole Positions</h3>
+                <table id="benade-table">
+                    <thead>
+                        <tr>
+                            <th>Trou</th>
+                            <th>Distance from Blowing Edge (mm)</th>
+                            <th>Corrected Position (mm)</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody id="benade-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <p data-i18n="footer">Crafted with care for flute makers worldwide 🌿</p>
+        </footer>
+    </div>
+
+    <!-- Visualization Modal -->
+    <div id="visualization-modal" class="modal-backdrop" onclick="closeVisualizationIfBackdrop(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="modal-close" onclick="closeVisualization()">×</button>
+            <div id="flute-drawing-container">
+                <!-- SVG will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript files -->
+    <script src="js/i18n.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/flute-drawing.js"></script>
+    <script src="js/simple-tab.js"></script>
+    <script src="js/acoustical-tab.js"></script>
+    <script src="js/benade-tab.js"></script>
+    <script>
+        // Initialize UI on page load
+        document.addEventListener('DOMContentLoaded', async function() {
+            await i18n.init(); // Initialize internationalization
+            onHoleNumberChange(); // Initialize button visibility based on default hole count
+        });
+    </script>
+</body>
+</html>

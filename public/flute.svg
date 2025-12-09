@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bambooGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b6f47"/>
+      <stop offset="50%" style="stop-color:#d4b896"/>
+      <stop offset="100%" style="stop-color:#8b6f47"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="30" width="80" height="40" rx="5" fill="url(#bambooGradient)" stroke="#5d4a37" stroke-width="2"/>
+  <circle cx="25" cy="50" r="4" fill="#3e2723"/>
+  <circle cx="40" cy="50" r="4" fill="#3e2723"/>
+  <circle cx="55" cy="50" r="4" fill="#3e2723"/>
+  <circle cx="70" cy="50" r="4" fill="#3e2723"/>
+  <ellipse cx="85" cy="50" rx="3" ry="6" fill="#6d5738"/>
+</svg>
