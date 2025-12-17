@@ -43,7 +43,7 @@ body {
 
 /* Header */
 header {
-  background: 
+  background:
     linear-gradient(90deg, transparent 0%, rgba(93, 74, 55, 0.3) 20%, transparent 40%, rgba(109, 87, 56, 0.2) 60%, transparent 80%, rgba(93, 74, 55, 0.3) 100%),
     repeating-linear-gradient(0deg, #5d4a37 0px, #6d5738 2px, #7d6448 4px, #6d5738 6px, #5d4a37 8px),
     linear-gradient(135deg, #8b6f47 0%, #6d5738 50%, #5d4a37 100%);
@@ -157,6 +157,7 @@ header h1 {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -168,6 +169,7 @@ header h1 {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -176,7 +178,7 @@ header h1 {
 
 /* Algorithm Explanation */
 .algorithm-explanation {
-  background: 
+  background:
     linear-gradient(0deg, rgba(139, 111, 71, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(139, 111, 71, 0.03) 1px, transparent 1px),
     linear-gradient(135deg, #fdfbf7 0%, #f8f3e8 100%);
@@ -185,7 +187,7 @@ header h1 {
   border-left: 6px solid var(--wood-light);
   margin-bottom: 30px;
   border-radius: 4px;
-  box-shadow: 
+  box-shadow:
     0 4px 12px rgba(93, 74, 55, 0.15),
     inset 0 1px 0 rgba(255, 255, 255, 0.8);
   overflow: hidden;
@@ -199,14 +201,14 @@ header h1 {
   left: 0;
   right: 0;
   height: 8px;
-  background: linear-gradient(90deg, 
-    transparent 0%, 
-    rgba(139, 111, 71, 0.1) 10%, 
-    transparent 20%,
-    rgba(139, 111, 71, 0.05) 50%,
-    transparent 80%,
-    rgba(139, 111, 71, 0.1) 90%,
-    transparent 100%);
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(139, 111, 71, 0.1) 10%,
+      transparent 20%,
+      rgba(139, 111, 71, 0.05) 50%,
+      transparent 80%,
+      rgba(139, 111, 71, 0.1) 90%,
+      transparent 100%);
   pointer-events: none;
 }
 
@@ -322,7 +324,7 @@ header h1 {
 
 .input-section h3 {
   color: var(--wood-dark);
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   font-size: 1.3em;
 }
 
@@ -447,7 +449,8 @@ table {
   margin-top: 15px;
 }
 
-th, td {
+th,
+td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #e8d5c4;

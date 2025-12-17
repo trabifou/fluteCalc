@@ -12,7 +12,6 @@ function Step2PhysicalMeasurements({
   setNote1Frequency,
   note2Frequency, 
   setNote2Frequency,
-  onCalculate,
   effectiveLength,
   deltaAverage,
   baseNoteName
@@ -78,17 +77,13 @@ function Step2PhysicalMeasurements({
           />
         </InputGroup>
       </div>
-      
-      <button className="calculate-button" onClick={onCalculate}>
-        {t('step2_validate')}
-      </button>
 
       {effectiveLength && (
-        <div style={{ marginTop: '20px', padding: '15px', background: '#e8f5e9', borderRadius: '8px' }}>
+        <div style={{ marginTop: '20px', padding: '15px', background: '#e8dcc8', borderRadius: '8px' }}>
           <strong>{t('step2_calculated_values')}</strong><br />
           {t('step2_leff')} {effectiveLength.toFixed(2)} mm<br />
           {t('step2_delta')} {deltaAverage?.toFixed(2)} mm<br />
-          {t('step2_base_note')} {baseNoteName}
+          <em>{t('step2_base_note')}</em> <em>{baseNoteName}</em>
         </div>
       )}
     </div>

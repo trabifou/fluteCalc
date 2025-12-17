@@ -1,8 +1,21 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import InputGroup from '../InputGroup/InputGroup'
 
 function Step1CalculationMethod({ calculationMethod, onMethodChange }) {
   const { t } = useTranslation()
+
+  const recap = calculationMethod === 'half-wave' ? (
+    <>
+      {t('step1_half_wave_hint')}<br />
+      {t('step1_half_wave_delta')}
+    </>
+  ) : (
+    <>
+      {t('step1_quarter_wave_hint')}<br />
+      {t('step1_quarter_wave_delta')}
+    </>
+  )
 
   return (
     <div className="input-section">
@@ -18,18 +31,10 @@ function Step1CalculationMethod({ calculationMethod, onMethodChange }) {
           </select>
         </InputGroup>
       </div>
-      {calculationMethod === 'half-wave' && (
-        <div className="input-hint">
-          {t('step1_half_wave_hint')}<br />
-          {t('step1_half_wave_delta')}
-        </div>
-      )}
-      {calculationMethod === 'quarter-wave' && (
-        <div className="input-hint">
-          {t('step1_quarter_wave_hint')}<br />
-          {t('step1_quarter_wave_delta')}
-        </div>
-      )}
+      
+      <div style={{ marginTop: '20px', paddingTop: '10px', padding: '15px', background: '#e8dcc8', borderRadius: '8px' }}>
+        {recap}
+      </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import AlgorithmExplanation from '../components/AlgorithmExplanation/AlgorithmExplanation'
 import Step1CalculationMethod from '../components/AcousticalSteps/Step1CalculationMethod'
@@ -34,55 +34,43 @@ function AcousticalPage() {
   const [note1Frequency, setNote1Frequency] = useState(293.66) // Normal breath
   const [note2Frequency, setNote2Frequency] = useState(0) // Strong breath (optional)
   
-  // Calculated values from Step 2
-  const [effectiveLength, setEffectiveLength] = useState(null) // Leff
-  const [deltaAverage, setDeltaAverage] = useState(null) // Delta
-  
-  // Step 3: Target notes (5 notes minimum, generated from base frequency)
-  const [targetNotes, setTargetNotes] = useState(generateTargetNotes(293.66, 5))
+  // Step 3: Target notes (structure de base: notes, frequences, diametres)
+  const [targetNotesBase, setTargetNotesBase] = useState(generateTargetNotes(293.66, 5))
   
   const minNotes = 5
   const maxNotes = calculationMethod === 'half-wave' ? 10 : 7
 
-  // Regenerate target notes when base frequency changes
+  // Regenerer les notes de base quand la frequence change
   useEffect(() => {
-    setTargetNotes(generateTargetNotes(note1Frequency, targetNotes.length))
+    setTargetNotesBase(generateTargetNotes(note1Frequency, targetNotesBase.length))
   }, [note1Frequency])
 
-  // Calculate Step 2 values
-  const handleCalculateStep2 = () => {
-    const leff = calculateEffectiveLength(
-      note1Frequency, 
-      temperature, 
-      calculationMethod
-    )
-    setEffectiveLength(leff)
-    
-    // Calculate Delta
-    let delta
+  // Calculer effectiveLength automatiquement
+  const effectiveLength = useMemo(() => {
+    return calculateEffectiveLength(note1Frequency, temperature, calculationMethod)
+  }, [note1Frequency, temperature, calculationMethod])
+
+  // Calculer deltaAverage automatiquement
+  const deltaAverage = useMemo(() => {
     if (note2Frequency > 0) {
-      // Si note2 renseignée, calculer Delta moyen
-      delta = calculateDeltaFromTwoNotes(
+      return calculateDeltaFromTwoNotes(
         note1Frequency,
         note2Frequency,
         temperature,
         calculationMethod
       )
     } else {
-      // Sinon Delta par défaut selon la méthode
-      delta = calculationMethod === 'half-wave' 
-        ? 0.6 * (innerDiameter / 2) // ~0.6-1.2 × radius
-        : 1.0 * (innerDiameter / 2) // TSH correction
+      return calculationMethod === 'half-wave' 
+        ? 0.6 * (innerDiameter / 2)
+        : 1.0 * (innerDiameter / 2)
     }
-    setDeltaAverage(delta)
-    
-    // Recalculate all target note positions
-    recalculateAllPositions(delta, leff)
-  }
+  }, [note2Frequency, note1Frequency, temperature, calculationMethod, innerDiameter])
 
-  // Recalculate all target note positions
-  const recalculateAllPositions = (delta, leff) => {
-    const updated = targetNotes.map((note, index) => {
+  // Calculer les positions des notes automatiquement
+  const targetNotes = useMemo(() => {
+    if (!effectiveLength || !deltaAverage) return targetNotesBase
+
+    return targetNotesBase.map((note, index) => {
       if (!note.isMeasured) {
         const position = calculateHolePosition(
           note.frequency,
@@ -90,38 +78,36 @@ function AcousticalPage() {
           innerDiameter,
           temperature,
           calculationMethod,
-          delta,
-          leff
+          deltaAverage,
+          effectiveLength
         )
         
-        // Apply shift based on previous holes
-        const shifted = shiftFollowingNotes(position, index, targetNotes)
+        const shifted = shiftFollowingNotes(position, index, targetNotesBase)
         
         return { ...note, position: shifted }
       }
       return note
     })
-    setTargetNotes(updated)
-  }
+  }, [targetNotesBase, effectiveLength, deltaAverage, innerDiameter, temperature, calculationMethod])
+
+  // Memoiser baseNoteName
+  const baseNoteName = useMemo(() => {
+    return getClosestNote(note1Frequency).name
+  }, [note1Frequency])
 
   // Add new target note
   const addTargetNote = () => {
-    if (targetNotes.length < maxNotes) {
-      const newNotes = generateTargetNotes(note1Frequency, targetNotes.length + 1)
-      setTargetNotes(newNotes)
+    if (targetNotesBase.length < maxNotes) {
+      const newNotes = generateTargetNotes(note1Frequency, targetNotesBase.length + 1)
+      setTargetNotesBase(newNotes)
     }
   }
 
   // Update target note
   const updateTargetNote = (index, field, value) => {
-    const updated = [...targetNotes]
+    const updated = [...targetNotesBase]
     updated[index][field] = value
-    setTargetNotes(updated)
-    
-    // Recalculate position if we have delta
-    if (deltaAverage && effectiveLength && (field === 'frequency' || field === 'holeDiameter')) {
-      recalculateAllPositions(deltaAverage, effectiveLength)
-    }
+    setTargetNotesBase(updated)
   }
 
   // Add measured note (gain precision)
@@ -132,50 +118,56 @@ function AcousticalPage() {
 
   const handleMeasureConfirm = (freq, diam) => {
     if (currentMeasureIndex !== null) {
-      // Calculate new Delta from measurement
+      // Marquer la note comme mesuree
+      const updated = [...targetNotesBase]
+      updated[currentMeasureIndex].isMeasured = true
+      updated[currentMeasureIndex].frequency = freq
+      updated[currentMeasureIndex].holeDiameter = diam
+      
+      // Calculer le nouveau Delta a partir de la mesure
       const newDelta = calculateDeltaFromTwoNotes(
         note1Frequency,
         freq,
         temperature,
         calculationMethod
       )
-      setDeltaAverage(newDelta)
       
-      // Mark this note as measured
-      const updated = [...targetNotes]
-      updated[currentMeasureIndex].isMeasured = true
-      updated[currentMeasureIndex].frequency = freq
-      updated[currentMeasureIndex].holeDiameter = diam
-      setTargetNotes(updated)
+      // Recalculer toutes les positions suivantes avec le nouveau Delta
+      const recalculated = recalculatePositionsAfterMeasurement(
+        currentMeasureIndex, 
+        updated, 
+        newDelta, 
+        effectiveLength, 
+        innerDiameter, 
+        temperature, 
+        calculationMethod
+      )
       
-      // Recalculate all following positions with new Delta
-      recalculatePositionsAfterMeasurement(currentMeasureIndex, updated, newDelta, effectiveLength, innerDiameter, temperature, calculationMethod)
-      
+      setTargetNotesBase(recalculated)
       setCurrentMeasureIndex(null)
     }
   }
 
   // Remove target note
   const removeTargetNote = (index) => {
-    const updated = targetNotes.filter((_, i) => i !== index)
-    setTargetNotes(updated)
+    const updated = targetNotesBase.filter((_, i) => i !== index)
+    setTargetNotesBase(updated)
   }
 
   // Change note by semitone (+1 or -1)
   const changeNoteSemitone = (index, direction) => {
-    const updated = [...targetNotes]
+    const updated = [...targetNotesBase]
     const currentNote = updated[index]
     
     // Find current note index in chromatic scale
     const currentNoteIndex = chromaticScale.indexOf(currentNote.noteName)
     
     // Calculate new note index (wraps around)
-    let newNoteIndex = (currentNoteIndex + direction + 12) % 12
+    const newNoteIndex = (currentNoteIndex + direction + 12) % 12
     const newNoteName = chromaticScale[newNoteIndex]
     
-    // Calculate new frequency (base frequency + semitone offset)
-    const baseNote = getClosestNote(note1Frequency)
-    const currentOffset = index + 1 // Original offset from base
+    // Calculate new frequency
+    const currentOffset = index + 1
     const newOffset = currentOffset + direction
     const newFrequency = calculateFrequencyFromNote(note1Frequency, newOffset)
     
@@ -185,17 +177,12 @@ function AcousticalPage() {
       noteName: newNoteName,
       frequency: parseFloat(newFrequency.toFixed(2))
     }
-    setTargetNotes(updated)
-    
-    // Recalculate position if we have delta
-    if (deltaAverage && effectiveLength) {
-      recalculateAllPositions(deltaAverage, effectiveLength)
-    }
+    setTargetNotesBase(updated)
   }
 
   // Reset note to default (5mm diameter, +1 semitone from previous)
   const resetNote = (index) => {
-    const updated = [...targetNotes]
+    const updated = [...targetNotesBase]
     const baseNote = getClosestNote(note1Frequency)
     
     // Calculate default values: +1 semitone per note from base
@@ -212,12 +199,7 @@ function AcousticalPage() {
       holeDiameter: 5,
       isMeasured: false
     }
-    setTargetNotes(updated)
-    
-    // Recalculate position if we have delta
-    if (deltaAverage && effectiveLength) {
-      recalculateAllPositions(deltaAverage, effectiveLength)
-    }
+    setTargetNotesBase(updated)
   }
 
   // Current inputs display for algorithm explanation
@@ -228,7 +210,7 @@ function AcousticalPage() {
       Leff: {effectiveLength.toFixed(2)} mm<br />
       Delta: {deltaAverage?.toFixed(2)} mm<br />
       {t('algo_inner_diameter')} {innerDiameter} mm<br />
-      {t('algo_temperature')} {temperature} °C
+      {t('algo_temperature')} {temperature} ┬░C
     </>
   ) : null
 
@@ -276,27 +258,24 @@ function AcousticalPage() {
         setNote1Frequency={setNote1Frequency}
         note2Frequency={note2Frequency}
         setNote2Frequency={setNote2Frequency}
-        onCalculate={handleCalculateStep2}
         effectiveLength={effectiveLength}
         deltaAverage={deltaAverage}
-        baseNoteName={getClosestNote(note1Frequency).name}
+        baseNoteName={baseNoteName}
       />
 
       {/* STEP 3: Target Notes */}
-      {effectiveLength && deltaAverage && (
-        <Step3TargetNotes 
-          targetNotes={targetNotes}
-          minNotes={minNotes}
-          maxNotes={maxNotes}
-          physicalLength={physicalLength}
-          onUpdateNote={updateTargetNote}
-          onMeasureNote={addMeasuredNote}
-          onRemoveNote={removeTargetNote}
-          onAddNote={addTargetNote}
-          onChangeNoteSemitone={changeNoteSemitone}
-          onResetNote={resetNote}
-        />
-      )}
+      <Step3TargetNotes 
+        targetNotes={targetNotes}
+        minNotes={minNotes}
+        maxNotes={maxNotes}
+        physicalLength={physicalLength}
+        onUpdateNote={updateTargetNote}
+        onMeasureNote={addMeasuredNote}
+        onRemoveNote={removeTargetNote}
+        onAddNote={addTargetNote}
+        onChangeNoteSemitone={changeNoteSemitone}
+        onResetNote={resetNote}
+      />
 
       {/* Measure Modal */}
       <MeasureModal 

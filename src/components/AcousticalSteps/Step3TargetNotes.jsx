@@ -24,9 +24,8 @@ function Step3TargetNotes({
         <div key={note.id} style={{ 
           marginBottom: '20px', 
           padding: '15px', 
-          background: note.isMeasured ? '#e8f5e9' : '#fff8f0',
-          borderRadius: '8px',
-          border: `2px solid ${note.isMeasured ? '#4caf50' : '#d4b896'}`
+          background: '#e8dcc8',
+          borderRadius: '8px'
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
             {/* Reset button - Left */}
