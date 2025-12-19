@@ -22,7 +22,7 @@ function Step2PhysicalMeasurements({
     <div className="input-section">
       <h3>{t('step2_title')}</h3>
       <div className="input-grid">
-        <InputGroup label={t('step2_lphys')} hint={t('step2_lphys_hint')}>
+        <InputGroup label={t('step2_lphys')} hint={t('step2_lphys_hint')} unit="mm">
           <input
             type="number"
             value={physicalLength}
@@ -30,10 +30,11 @@ function Step2PhysicalMeasurements({
             min="100"
             max="1000"
             step="1"
+            style={{ paddingRight: '35px' }}
           />
         </InputGroup>
         
-        <InputGroup label={t('step2_dinner')} hint={t('step2_dinner_hint')}>
+        <InputGroup label={t('step2_dinner')} hint={t('step2_dinner_hint')} unit="mm">
           <input
             type="number"
             value={innerDiameter}
@@ -41,10 +42,11 @@ function Step2PhysicalMeasurements({
             min="10"
             max="50"
             step="0.5"
+            style={{ paddingRight: '35px' }}
           />
         </InputGroup>
         
-        <InputGroup label={t('temperature')} hint="Pour la vitesse du son (optionnel)">
+        <InputGroup label={t('temperature')} hint="Pour la vitesse du son (optionnel)" unit="°C">
           <input
             type="number"
             value={temperature}
@@ -52,10 +54,11 @@ function Step2PhysicalMeasurements({
             min="-10"
             max="40"
             step="1"
+            style={{ paddingRight: '35px' }}
           />
         </InputGroup>
 
-        <InputGroup label={t('step2_note1_freq')} hint={t('step2_note1_hint')}>
+        <InputGroup label={t('step2_note1_freq')} hint={t('step2_note1_hint')} unit="Hz">
           <input
             type="number"
             value={note1Frequency}
@@ -63,10 +66,11 @@ function Step2PhysicalMeasurements({
             min="100"
             max="1000"
             step="0.01"
+            style={{ paddingRight: '35px' }}
           />
         </InputGroup>
 
-        <InputGroup label={t('step2_note2_freq')} hint={t('step2_note2_hint')}>
+        <InputGroup label={t('step2_note2_freq')} hint={t('step2_note2_hint')} unit="Hz">
           <input
             type="number"
             value={note2Frequency}
@@ -74,6 +78,7 @@ function Step2PhysicalMeasurements({
             min="0"
             max="1000"
             step="0.01"
+            style={{ paddingRight: '35px' }}
           />
         </InputGroup>
       </div>

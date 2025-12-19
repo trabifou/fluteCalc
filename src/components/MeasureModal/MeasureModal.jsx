@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import InputGroup from '../InputGroup/InputGroup'
 import './MeasureModal.css'
 
 function MeasureModal({ isOpen, onClose, onConfirm, initialFrequency, initialDiameter }) {
@@ -27,8 +28,7 @@ function MeasureModal({ isOpen, onClose, onConfirm, initialFrequency, initialDia
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <h3>{t('measure_modal_title')}</h3>
         
-        <div className="modal-input-group">
-          <label>{t('measure_modal_frequency')}</label>
+        <InputGroup label={t('measure_modal_frequency')} unit="Hz">
           <input
             type="number"
             value={frequency}
@@ -38,11 +38,11 @@ function MeasureModal({ isOpen, onClose, onConfirm, initialFrequency, initialDia
             step="0.01"
             placeholder="Enter frequency"
             autoFocus
+            style={{ paddingRight: '35px' }}
           />
-        </div>
+        </InputGroup>
 
-        <div className="modal-input-group">
-          <label>{t('measure_modal_diameter')}</label>
+        <InputGroup label={t('measure_modal_diameter')} unit="mm">
           <input
             type="number"
             value={diameter}
@@ -51,8 +51,9 @@ function MeasureModal({ isOpen, onClose, onConfirm, initialFrequency, initialDia
             max="15"
             step="0.5"
             placeholder="Enter diameter"
+            style={{ paddingRight: '35px' }}
           />
-        </div>
+        </InputGroup>
 
         <div className="modal-buttons">
           <button className="modal-button cancel" onClick={handleCancel}>
