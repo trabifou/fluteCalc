@@ -160,7 +160,10 @@ style={{ paddingRight: '35px' }} // Makes room for unit display
 ❌ Using class components or legacy React patterns  
 ❌ Creating "Calculate" buttons (breaks instant update UX)  
 ❌ Hardcoding colors instead of using CSS variables  
-❌ Modifying `old/` folder (it's legacy reference code)
+❌ Modifying `old/` folder (it's legacy reference code)  
+❌ Not recalculating delta when adjusting interval on measured notes  
+❌ Forgetting to store measured position in targetNotesBase  
+❌ Not using `.interval-spacer` class for responsive interval display
 
 ## File Organization Rules
 

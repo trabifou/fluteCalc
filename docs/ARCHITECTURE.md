@@ -80,17 +80,21 @@ Step 1: Method Selection
   ↓ (calculationMethod: 'half-wave' | 'quarter-wave')
   
 Step 2: Physical Measurements
-  ↓ (physicalLength, innerDiameter, temperature, note1Frequency, note2Frequency)
+  ↓ (physicalLength, innerDiameter, temperature, note1Frequency)
   ↓ useMemo → effectiveLength
-  ↓ useMemo → deltaAverage
+  ↓ useMemo → estimatedDelta (from empirical formula)
+  ↓ useMemo → step2ValidationError (checks first 5 notes for valid positions)
   
 Step 3: Target Notes
-  ↓ (targetNotesBase: Array<{frequency, holeDiameter, isMeasured}>)
-  ↓ useMemo → targetNotes (with calculated positions)
+  ↓ (targetNotesBase: Array<{frequency, holeDiameter, noteName, isMeasured, position?}>)
+  ↓ User adjusts interval with +/- buttons (0.25 semitone steps)
+  ↓ useMemo → targetNotes (preserves measured positions, calculates unmeasured)
+  ↓ User drills hole at calculated position
   ↓ User clicks "Measure" → MeasureModal opens
-  ↓ User enters measured values
-  ↓ recalculatePositionsAfterMeasurement()
-  ↓ All following notes shift automatically
+  ↓ User enters REAL measured frequency + diameter
+  ↓ Position stored in targetNotesBase (where hole was drilled)
+  ↓ calculateDeltaFromMeasuredHole() → improved delta precision
+  ↓ Following notes recalculated with refined delta
 ```
 
 **Key Insight**: No "Calculate" buttons - all values update instantly on input change via `useMemo` dependencies.
@@ -103,9 +107,12 @@ Pure functions implementing acoustic physics:
 
 - `calculateSpeedOfSound(temperature)`: Temperature-corrected sound velocity
 - `calculateEffectiveLength(frequency, temp, method)`: Resonant tube length
-- `calculateDeltaFromTwoNotes(...)`: End correction from two measured frequencies
+- `calculateDeltaFromMeasuredHole(...)`: Inverse solver - calculates delta from measured hole frequency + position + diameter
 - `calculateHolePosition(...)`: Hole placement from target frequency
 - `recalculatePositionsAfterMeasurement(...)`: Cascading corrections after real measurements
+- `calculateSemitoneInterval(freq1, freq2)`: Returns fractional semitones between frequencies using logarithmic formula
+- `analyzeFrequencyAccuracy(frequency)`: Detects if frequency matches chromatic note within ±10 cents tolerance
+- `validateStep2Parameters(targetNotes, physicalLength)`: Validates first 5 notes have positions within physical bounds
 
 ### Two Calculation Modes
 
@@ -157,6 +164,12 @@ Reusable component for all numeric inputs with inline units:
 
 **Unit positioning**: Absolute position inside input (right: 0, top: 50%, transform: translateY(-50%))  
 **Width behavior**: Clone input with `width: 100%, boxSizing: border-box`
+
+### Responsive Design
+
+- **Interval spacer**: `.interval-spacer` class provides vertical alignment on desktop, hidden on mobile (≤768px) via media query
+- **Flex wrapping**: Step 3 note cards use `flexWrap: 'wrap'` to adapt to narrow screens
+- **Inline interval display**: Compact `[−] +X.XX (Note) [+]` format with 28×28px buttons, positioned between diameter and position
 
 ## Internationalization
 

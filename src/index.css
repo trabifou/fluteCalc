@@ -24,6 +24,18 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+/* Interval spacer - hidden on mobile */
+.interval-spacer {
+  height: 17px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 768px) {
+  .interval-spacer {
+    display: none;
+  }
+}
+
 body {
   font-family: 'Georgia', 'Palatino', serif;
   background: linear-gradient(135deg, #f5e6d3 0%, #e8d5c4 100%);

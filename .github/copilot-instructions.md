@@ -5,3 +5,4 @@
 * [Contributing Guidelines](../docs/CONTRIBUTING.md): Overview of the project's contributing guidelines and collaboration practices.
 
 Suggest to update these documents if you find any incomplete or conflicting information during your work.
+Review the changes made after implementation agaisnt those docs and provide updates if necessary .

@@ -7,13 +7,16 @@ import Step3TargetNotes from '../components/AcousticalSteps/Step3TargetNotes'
 import MeasureModal from '../components/MeasureModal/MeasureModal'
 import { 
   calculateEffectiveLength, 
-  calculateDeltaFromTwoNotes, 
+  calculateDeltaFromMeasuredHole, 
   calculateHolePosition,
   recalculatePositionsAfterMeasurement,
   shiftFollowingNotes,
   generateTargetNotes,
   getClosestNote,
   calculateFrequencyFromNote,
+  calculateSemitoneInterval,
+  analyzeFrequencyAccuracy,
+  validateStep2Parameters,
   chromaticScale
 } from '../utils/calculations'
 
@@ -28,14 +31,18 @@ function AcousticalPage() {
   const [calculationMethod, setCalculationMethod] = useState('half-wave') // 'half-wave' or 'quarter-wave'
   
   // Step 2: Physical measurements
-  const [physicalLength, setPhysicalLength] = useState(400) // Lphys
-  const [innerDiameter, setInnerDiameter] = useState(19) // Dinner
-  const [temperature, setTemperature] = useState(20)
-  const [note1Frequency, setNote1Frequency] = useState(293.66) // Normal breath
-  const [note2Frequency, setNote2Frequency] = useState(0) // Strong breath (optional)
+  const [physicalLength, setPhysicalLength] = useState(450) // Lphys - typical bamboo flute length
+  const [innerDiameter, setInnerDiameter] = useState(20) // Dinner - common bore diameter
+  const [wallThickness, setWallThickness] = useState(3) // Wall thickness (mm) - bamboo average
+  const [temperature, setTemperature] = useState(20) // Standard room temperature
+  const [note1Frequency, setNote1Frequency] = useState(392.00) // G4 - matches 450mm flute
   
   // Step 3: Target notes (structure de base: notes, frequences, diametres)
-  const [targetNotesBase, setTargetNotesBase] = useState(generateTargetNotes(293.66, 5))
+  const [targetNotesBase, setTargetNotesBase] = useState(generateTargetNotes(392.00, 5))
+  
+  // Measured delta: more accurate than calculated, updated after each measurement
+  const [measuredDelta, setMeasuredDelta] = useState(null)
+  const [measurementCount, setMeasurementCount] = useState(0)
   
   const minNotes = 5
   const maxNotes = calculationMethod === 'half-wave' ? 10 : 7
@@ -50,45 +57,49 @@ function AcousticalPage() {
     return calculateEffectiveLength(note1Frequency, temperature, calculationMethod)
   }, [note1Frequency, temperature, calculationMethod])
 
-  // Calculer deltaAverage automatiquement
+  // Calculer deltaAverage automatiquement (empirical end correction formula)
   const deltaAverage = useMemo(() => {
-    if (note2Frequency > 0) {
-      return calculateDeltaFromTwoNotes(
-        note1Frequency,
-        note2Frequency,
-        temperature,
-        calculationMethod
-      )
-    } else {
-      return calculationMethod === 'half-wave' 
-        ? 0.6 * (innerDiameter / 2)
-        : 1.0 * (innerDiameter / 2)
-    }
-  }, [note2Frequency, note1Frequency, temperature, calculationMethod, innerDiameter])
+    return calculationMethod === 'half-wave' 
+      ? 0.6 * (innerDiameter / 2)
+      : 1.0 * (innerDiameter / 2)
+  }, [calculationMethod, innerDiameter])
+
+  // Use measured delta if available (more accurate), otherwise use calculated average
+  const deltaToUse = measuredDelta !== null ? measuredDelta : deltaAverage
 
   // Calculer les positions des notes automatiquement
   const targetNotes = useMemo(() => {
-    if (!effectiveLength || !deltaAverage) return targetNotesBase
+    if (!effectiveLength || !deltaToUse) return targetNotesBase
 
     return targetNotesBase.map((note, index) => {
-      if (!note.isMeasured) {
-        const position = calculateHolePosition(
-          note.frequency,
-          note.holeDiameter,
-          innerDiameter,
-          temperature,
-          calculationMethod,
-          deltaAverage,
-          effectiveLength
-        )
-        
-        const shifted = shiftFollowingNotes(position, index, targetNotesBase)
-        
-        return { ...note, position: shifted }
+      // If note is measured and has a stored position, keep it
+      if (note.isMeasured && note.position) {
+        return note
       }
-      return note
+      
+      // Calculate position for unmeasured notes or measured notes without stored position
+      const position = calculateHolePosition(
+        note.frequency,
+        note.holeDiameter,
+        innerDiameter,
+        temperature,
+        calculationMethod,
+        deltaToUse,
+        wallThickness,
+        physicalLength
+      )
+      
+      const shifted = shiftFollowingNotes(position, index, targetNotesBase)
+      
+      return { ...note, position: shifted }
     })
-  }, [targetNotesBase, effectiveLength, deltaAverage, innerDiameter, temperature, calculationMethod])
+  }, [targetNotesBase, effectiveLength, deltaToUse, innerDiameter, temperature, calculationMethod, physicalLength, wallThickness])
+
+  // Validate Step 2 parameters - check if first 5 notes have valid positions
+  const step2ValidationError = useMemo(() => {
+    if (!effectiveLength || targetNotes.length === 0) return false
+    return !validateStep2Parameters(targetNotes, physicalLength)
+  }, [targetNotes, physicalLength, effectiveLength])
 
   // Memoiser baseNoteName
   const baseNoteName = useMemo(() => {
@@ -110,6 +121,50 @@ function AcousticalPage() {
     setTargetNotesBase(updated)
   }
 
+  // Adjust note interval by snapping to 0.25-tone grid
+  const adjustNoteInterval = (index, direction) => {
+    const updated = [...targetNotesBase]
+    const currentNote = updated[index]
+    
+    // Determine reference frequency (base note for first hole, previous note otherwise)
+    const refFreq = index === 0 ? note1Frequency : updated[index - 1].frequency
+    
+    // Calculate current interval
+    const currentInterval = calculateSemitoneInterval(refFreq, currentNote.frequency)
+    
+    // Snap to nearest 0.25 multiple in the specified direction
+    let newInterval
+    if (direction > 0) {
+      // Round up to next 0.25 multiple
+      newInterval = Math.ceil(currentInterval * 4) / 4
+      // If already on a 0.25 multiple, add 0.25
+      if (Math.abs(newInterval - currentInterval) < 0.001) {
+        newInterval += 0.25
+      }
+    } else {
+      // Round down to previous 0.25 multiple
+      newInterval = Math.floor(currentInterval * 4) / 4
+      // If already on a 0.25 multiple, subtract 0.25
+      if (Math.abs(newInterval - currentInterval) < 0.001) {
+        newInterval -= 0.25
+      }
+    }
+    
+    // Ensure minimum interval of 0.25 semitones
+    if (newInterval < 0.25) {
+      newInterval = 0.25
+    }
+    
+    // Calculate new frequency
+    const newFreq = refFreq * Math.pow(2, newInterval / 12)
+    
+    // Update frequency and note name
+    updated[index].frequency = parseFloat(newFreq.toFixed(2))
+    updated[index].noteName = getClosestNote(newFreq).name
+    
+    setTargetNotesBase(updated)
+  }
+
   // Add measured note (gain precision)
   const addMeasuredNote = (index) => {
     setCurrentMeasureIndex(index)
@@ -123,14 +178,25 @@ function AcousticalPage() {
       updated[currentMeasureIndex].isMeasured = true
       updated[currentMeasureIndex].frequency = freq
       updated[currentMeasureIndex].holeDiameter = diam
+      // Store the calculated position where the hole was drilled
+      updated[currentMeasureIndex].position = targetNotes[currentMeasureIndex].position
       
-      // Calculer le nouveau Delta a partir de la mesure
-      const newDelta = calculateDeltaFromTwoNotes(
-        note1Frequency,
+      // Calculer le nouveau Delta a partir de la mesure (inverse problem: freq → delta)
+      // Uses the position where the hole was actually drilled (from previous calculation)
+      const newDelta = calculateDeltaFromMeasuredHole(
         freq,
+        targetNotes[currentMeasureIndex].position,
+        diam,
+        physicalLength,
+        innerDiameter,
+        wallThickness,
         temperature,
         calculationMethod
       )
+      
+      // Save measured delta for future calculations (more accurate than estimate)
+      setMeasuredDelta(newDelta)
+      setMeasurementCount(prev => prev + 1)
       
       // Recalculer toutes les positions suivantes avec le nouveau Delta
       const recalculated = recalculatePositionsAfterMeasurement(
@@ -140,7 +206,9 @@ function AcousticalPage() {
         effectiveLength, 
         innerDiameter, 
         temperature, 
-        calculationMethod
+        calculationMethod,
+        wallThickness,
+        physicalLength
       )
       
       setTargetNotesBase(recalculated)
@@ -252,33 +320,38 @@ function AcousticalPage() {
         setPhysicalLength={setPhysicalLength}
         innerDiameter={innerDiameter}
         setInnerDiameter={setInnerDiameter}
+        wallThickness={wallThickness}
+        setWallThickness={setWallThickness}
         temperature={temperature}
         setTemperature={setTemperature}
         note1Frequency={note1Frequency}
         setNote1Frequency={setNote1Frequency}
-        note2Frequency={note2Frequency}
-        setNote2Frequency={setNote2Frequency}
         effectiveLength={effectiveLength}
         deltaAverage={deltaAverage}
         baseNoteName={baseNoteName}
+        measuredDelta={measuredDelta}
+        measurementCount={measurementCount}
+        validationError={step2ValidationError}
       />
 
       {/* STEP 3: Target Notes */}
-      <Step3TargetNotes 
+      <Step3TargetNotes
         targetNotes={targetNotes}
         minNotes={minNotes}
         maxNotes={maxNotes}
         physicalLength={physicalLength}
+        baseFrequency={note1Frequency}
         onUpdateNote={updateTargetNote}
         onMeasureNote={addMeasuredNote}
         onRemoveNote={removeTargetNote}
         onAddNote={addTargetNote}
         onChangeNoteSemitone={changeNoteSemitone}
         onResetNote={resetNote}
+        onAdjustInterval={adjustNoteInterval}
       />
 
       {/* Measure Modal */}
-      <MeasureModal 
+      <MeasureModal
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false)

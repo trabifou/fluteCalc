@@ -50,25 +50,28 @@ The app provides three distinct approaches to solve the same problem: "Where sho
 - Inner diameter (Dinner)
 - Ambient temperature
 - Base note frequency (measure with tuner)
-- Optional: Second frequency for end correction
+- System validates parameters to detect impossible hole positions
 
 **Automatic calculations**:
 - Effective length (Leff) from measured frequency
-- Delta (end correction) from two measurements or estimated from diameter
+- Delta (end correction) estimated from diameter
 
 **Step 3**: Target notes configuration
 - Add 5-10 holes (depends on tube type)
 - Each hole: target frequency + hole diameter
+- **Interval display**: Shows semitone distance from base/previous note with +/- buttons (0.25 semitone steps)
 - System calculates position from blowing edge
 - **Real-time recalculation** - no "Calculate" button needed
 
 **Measurement workflow**:
-1. Calculate theoretical position
-2. Drill hole at calculated position
-3. Click "M" (Measure) button
-4. Enter actual measured frequency + diameter
-5. System recalculates all following holes based on real data
-6. Cascading corrections improve accuracy
+1. Adjust interval or frequency to select target note
+2. Calculate theoretical position
+3. Drill hole at calculated position
+4. Click "Measure" button
+5. Enter REAL measured frequency + diameter (position assumed to be where drilled)
+6. System recalculates delta using inverse solver for improved precision
+7. Following holes recalculated with refined delta
+8. Cascading corrections improve accuracy
 
 **Key insight**: Combines theory with empirical feedback loop
 
@@ -124,8 +127,9 @@ The app provides three distinct approaches to solve the same problem: "Where sho
 1. **Instant feedback**: All calculations update in real-time via useMemo hooks
 2. **Progressive disclosure**: Collapsible sections (algorithm explanations, measurement guides)
 3. **Inline units**: Measurement units (mm, Hz, °C) appear inside input fields
-4. **Icon buttons**: Compact 36×36px squares for actions (M=Measure, ↻=Reset, ✓=Measured)
-5. **Mobile responsive**: Adapts to phone/tablet screens
+4. **Compact controls**: 36×36px measure/reset buttons, 28×28px interval adjustment buttons
+5. **Inline interval display**: Semitone distance shown between diameter and position with format [−] +X.XX (Note) [+]
+6. **Mobile responsive**: Adapts to phone/tablet screens, interval spacer hidden on narrow screens
 
 ### Workflow Philosophy
 
