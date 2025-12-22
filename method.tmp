@@ -12,7 +12,7 @@ Fermé à un bout, TSH | Quart d’onde | L_eff = c / (4 * f0)
 
     - Flûte Native américaine (double chambre) Delta = déplacement du nœud dû à TSH + end correction (Mesure souffle faible/fort permet estimation) (max 7 trous)
 
-<!--  pas a integrer pour le moment
+<!--  pas integré pour le moment
 //| Xiao chinoise (tube conique, ouverture) | Ouvert / légèrement conique | Demi-onde modifiée | L_eff = (c / (2 * f0)) * f_cone | Δ = fonction de conicité + end correction | f_cone ≈ coefficient dépend de la pente du cône |
 //| Shakuhachi | Ouvert / conique | Demi-onde modifiée | L_eff = (c / (2 * f0)) * f_cone | Δ = correction labium + conicité | Δ spécifique au labium et à la taille du bec |
 //| Flûte à bloc (recorder, sweet pipe) | Ouvert | Demi-onde | L_eff = c / (2 * f0) | Δ = correction de labium (~0.5–1 × rayon) | Peut utiliser deux mesures pour ajuster Δ |
@@ -36,6 +36,7 @@ Code -> Calcultate:
 Interface Notes (low to high)= 
     - Note input *5
     - bouton + ( ajouter une note) ( visible tant que Notes.length < max notes)
+    
 ### Pour chaque note
 User -> enter input of target notes in order
 interface Note = 
@@ -50,11 +51,10 @@ interface Note =
 When a target note is added:
 Code -> calculate:
     - hole position
-    - shift following notes position for each note according to a formule
+    - shift following notes position for each note according to a Brenade/Nederveen
 
 When a measured note is added :
 Code -> 
-    - Calculate new Delta ( gain precision)
     - recalculate hole positions ( targets only)
-    - shift following notes position for each note according to a formule
+    - shift following notes position for each note according to Brenade/Nederveen
 

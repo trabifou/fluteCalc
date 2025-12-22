@@ -11,7 +11,6 @@ A web application for calculating precise hole positions when crafting tradition
 
 - **Bilingual Support**: French and English
 - **Real-time Calculations**: Instant feedback as you adjust parameters
-- **Visual Diagrams**: SVG flute visualization with hole positions
 - **Measurement Workflow**: Iterative refinement with actual measurements
 
 ## Technology Stack
@@ -19,7 +18,7 @@ A web application for calculating precise hole positions when crafting tradition
 - React 19.2.0
 - Vite 7.2.4
 - React Router 7.1.1
-- i18next for internationalization
+- react-i18next 15.4.0
 
 ## Documentation
 

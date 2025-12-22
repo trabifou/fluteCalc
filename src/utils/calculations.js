@@ -330,31 +330,6 @@ export function calculateHolePositions(model, baseFreq, diameter, temp) {
   return { positions, frequencies };
 }
 
-// Calculate acoustical method positions (legacy - not used by AcousticalPage)
-export function calculateAcousticalPositions(baseFreq, diameter, temp, numHoles) {
-  const speedOfSound = calculateSpeedOfSound(temp);
-  const endCorrection = calculateEndCorrection(diameter);
-  
-  const semitones = [2, 4, 5, 7, 9, 11, 12, 14];
-  const results = [];
-  
-  for (let i = 0; i < numHoles; i++) {
-    const semitone = semitones[i];
-    const frequency = calculateFrequencyFromSemitone(baseFreq, semitone);
-    const effectiveLength = XcalculateEffectiveLength(frequency, speedOfSound, endCorrection);
-    const note = getNoteFromSemitones(2, semitone);
-    
-    results.push({
-      hole: i + 1,
-      position: effectiveLength,
-      note,
-      frequency
-    });
-  }
-  
-  return results;
-}
-
 // ============================================================================
 // BENADE PAGE - BENADE'S FORMULA
 // ============================================================================
@@ -385,85 +360,4 @@ export function calculateBenadePositions(length, boreDiameter, holeDiameter, wal
   }
   
   return results;
-}
-
-// ============================================================================
-// DEPRECATED / UNUSED FUNCTIONS
-// ============================================================================
-
-/**
- * Calculate Delta (end correction) from a measured hole
- * NOTE: This function is DEPRECATED - Delta is now calculated directly as Δ = Lphys - Leff
- * Kept for reference/legacy compatibility only
- */
-export function calculateDeltaFromMeasuredHole(
-  measuredFreq,
-  holePositionFromBase,
-  holeDiameter,
-  physicalLength,
-  innerDiameter,
-  wallThickness,
-  temperature,
-  calculationMethod
-) {
-  const speedOfSound = calculateSpeedOfSound(temperature);
-  const acousticPositionFromBlowingEdge = physicalLength - holePositionFromBase;
-  
-  let baseLength;
-  if (calculationMethod === 'half-wave') {
-    baseLength = speedOfSound / (2 * measuredFreq);
-  } else {
-    baseLength = speedOfSound / (4 * measuredFreq);
-  }
-  
-  const holeSizeRatio = holeDiameter / innerDiameter;
-  const alpha = 0.75 + 0.5 * holeSizeRatio;
-  const holeEndCorrection = alpha * (holeDiameter / 2);
-  const chimneyCorrection = 0.75 * wallThickness;
-  
-  const delta = baseLength - acousticPositionFromBlowingEdge - holeEndCorrection - chimneyCorrection;
-  
-  return delta;
-}
-
-/**
- * Recalculate all positions after a measurement
- * NOTE: This function is DEPRECATED - Delta no longer recalculated after measurements
- * Kept for reference/legacy compatibility only
- */
-export function recalculatePositionsAfterMeasurement(
-  measurementIndex,
-  targetNotes,
-  newDelta,
-  effectiveLength,
-  innerDiameter,
-  temperature,
-  calculationMethod,
-  wallThickness = 3,
-  physicalLength
-) {
-  return targetNotes.map((note, index) => {
-    if (note.isMeasured) {
-      return note;
-    }
-    
-    if (index <= measurementIndex) {
-      return note;
-    }
-    
-    const newPosition = calculateHolePosition(
-      note.frequency,
-      note.holeDiameter,
-      innerDiameter,
-      temperature,
-      calculationMethod,
-      newDelta,
-      wallThickness,
-      physicalLength
-    );
-    
-    const shifted = shiftFollowingNotes(newPosition, index, targetNotes);
-    
-    return { ...note, position: shifted };
-  });
 }

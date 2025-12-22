@@ -36,13 +36,3 @@ export function parseNumericInput(value) {
   // Replace comma with dot for parseFloat
   return parseFloat(value.replace(',', '.'))
 }
-
-/**
- * Format number for display in input (with comma)
- * @param {number} value - Number to format
- * @returns {string} Formatted string with comma
- */
-export function formatNumericInput(value) {
-  if (value === null || value === undefined || isNaN(value)) return ''
-  return value.toString().replace('.', ',')
-}
